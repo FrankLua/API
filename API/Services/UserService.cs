@@ -1,0 +1,41 @@
+﻿using API.Entity.Models;
+using API.Entity;
+using MongoDB.Driver;
+using API.Entity.APIResponce;
+
+namespace API.Services
+{
+    public class UserService : IUserService
+    {
+        private readonly IMongoCollection<User> _user;
+        public UserService(IAPIDatabaseSettings settings, IMongoClient mongoClient)
+        {
+            var database = mongoClient.GetDatabase(settings.DatabaseName);
+            _user = database.GetCollection<User>("Users");
+        }
+        public BaseResponse<User> CheakUser(string username, string password)
+        {
+            BaseResponse<User> response = new BaseResponse<User>();
+            List<User> users = new List<User>();
+            try
+            {
+                users = _user.Find(user => true).ToList();
+                users = users.Where(user => user.login == username && user.password == password).ToList();
+                if (users.Count > 0)
+                {
+                    response.data = users.First();
+                    return response;
+                }
+                response.error = "User not found";
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.error = "Crush";
+                return response;
+            }
+            
+        }
+    }
+}
