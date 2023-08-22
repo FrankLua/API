@@ -22,7 +22,7 @@ namespace API.Controllers
         }
         // GET: api/<DeviceController>
         [HttpGet, BasicAuthorization]
-        [Route("devicebyid")]
+        [Route("")]
         public BaseResponse<List<Device>> GetDevicebyId([FromQuery(Name = "id")] int id)
         {            
             return Device.GetDevicebyId(id);
