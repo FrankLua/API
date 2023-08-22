@@ -1,11 +1,11 @@
-﻿using API.Entity.APIResponce;
-using API.Entity.Models;
+﻿using API.DAL.Entity.APIResponce;
+using API.DAL.Entity.Models;
 
 namespace API.Services
 {
     public interface IDeviceService
     {
-        BaseResponse<List<Device>> GetDevicebyId(int id);
+        BaseResponse<DataResponce> GetDevicebyId(int id);
 
         BaseResponse<List<int>> GetDeviceIdbyUserId(int id);
 

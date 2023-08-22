@@ -1,4 +1,4 @@
-﻿namespace API.Entity.APIResponce
+﻿namespace API.DAL.Entity.APIResponce
 {
     public class BaseResponse<T> : IBaseResponse<T>
     {
@@ -7,11 +7,13 @@
         public T data { get; set; }
 
         
+
+        
     }
     
     public interface IBaseResponse<T>
     {
-        T data { get; }
+        public T data { get; }
 
 
     }

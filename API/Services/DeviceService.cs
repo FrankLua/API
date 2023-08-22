@@ -1,6 +1,6 @@
-﻿using API.Entity;
-using API.Entity.APIResponce;
-using API.Entity.Models;
+﻿using API.DAL.Entity;
+using API.DAL.Entity.APIResponce;
+using API.DAL.Entity.Models;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ namespace API.Services
     public class DeviceService : IDeviceService
     {
         private readonly IMongoCollection<Device> _device;
-        public DeviceService(IAPIDatabaseSettings settings,IMongoClient mongoClient)
+        public DeviceService(IAPIDatabaseSettings settings, IMongoClient mongoClient)
         {
             var database = mongoClient.GetDatabase(settings.DatabaseName);
             _device = database.GetCollection<Device>(settings.NameCollection);
@@ -26,27 +26,29 @@ namespace API.Services
             _device.DeleteOne(device => device.id == id);
         }
 
-        public BaseResponse<List<Device>> GetDevicebyId(int id)
+        public BaseResponse<DataResponce> GetDevicebyId(int id)
         {
-            BaseResponse< List < Device >> answer  = new BaseResponse< List < Device > >();
+            BaseResponse<DataResponce> answer = new BaseResponse<DataResponce> ();
+            answer.data = new DataResponce();
             try
             {
-                answer.data = _device.Find(device => true).ToList();
-                if(answer.data.Count == 0) { 
+                List<Device> list  = _device.Find(device => true).ToList();
+                if (list.Count == 0)
+                {
 
                     answer.error = "Device not found!";
                     return answer;
                 }
-                answer.data = answer.data.Where(d => d.id == id).ToList();
+                answer.data.devices.Add(list.First());
                 answer.error = null;
                 return answer;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 answer.error = "Crush";
                 return answer;
             }
-            
+
         }
 
         public Device GetbyID(int id)
@@ -64,12 +66,12 @@ namespace API.Services
         {
             BaseResponse<List<int>> answer = new BaseResponse<List<int>>();
             answer.data = new List<int>();
-            List<Device> list = new List<Device> ();
+            List<Device> list = new List<Device>();
             try
             {
                 list = _device.Find(device => true).ToList();
                 list = list.Where(device => device.User_Id == id).ToList();
-                foreach(Device device in list)
+                foreach (Device device in list)
                 {
                     int nowid = device.id;
                     answer.data.Add(nowid);
@@ -78,7 +80,7 @@ namespace API.Services
                 {
                     answer.error = "Device not found!";
                     return answer;
-                }                
+                }
                 answer.error = null;
                 return answer;
             }

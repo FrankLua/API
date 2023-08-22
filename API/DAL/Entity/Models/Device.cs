@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-namespace API.Entity.Models
+namespace API.DAL.Entity.Models
 {
 
 
@@ -20,6 +20,9 @@ namespace API.Entity.Models
         public int User_Id { get; set; }
         [BsonElement("ad_playlist")]
         public int? ad_playlist { get; set; }
+
+        [BsonElement("time_intervals")]
+        public List<TimeIntervals>? intervals { get; set; }
 
 
     }

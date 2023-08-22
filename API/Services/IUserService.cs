@@ -1,5 +1,6 @@
-﻿using API.Entity.APIResponce;
-using API.Entity.Models;
+﻿using API.DAL.Entity.APIResponce;
+using API.DAL.Entity.Models;
+using API.DAL.Entity.ResponceModels;
 
 namespace API.Services
 {
@@ -8,6 +9,8 @@ namespace API.Services
         public BaseResponse<User>  CheakUser(string username, string password);
 
 
-        public BaseResponse<List<Device>> GetUserDevice(string login);
+        public BaseResponse<DataResponce> GetUserDevice(string login);
+
+        public BaseResponse<UserResponce> GetUserInfo(string login);
     }
 }

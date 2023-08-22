@@ -1,4 +1,5 @@
-using API.Entity;
+using API.DAL.Entity;
+using API.DAL.Entity.SecrurityClass;
 using API.Entity.SecrurityClass;
 using API.Services;
 using Microsoft.AspNetCore.Authentication;

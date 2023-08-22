@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 
-namespace API.Entity.Models
+namespace API.DAL.Entity.Models
 {
     public class User
     {
@@ -9,7 +9,7 @@ namespace API.Entity.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string _id { get; set; }
         [BsonElement("id")]
-        public int id { get ; set; }
+        public int id { get; set; }
         [BsonElement("role")]
         public string role { get; set; }
 
@@ -19,8 +19,8 @@ namespace API.Entity.Models
         public string login { get; set; }
 
         [BsonElement("devices")]
-        public int[]devices { get; set; }
-        
-       
+        public int[] devices { get; set; }
+
+
     }
 }

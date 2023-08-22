@@ -5,14 +5,15 @@ using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Text;
 using API.Services;
-using API.Entity.Models;
+using API.DAL.Entity.Models;
+using API.Entity.SecrurityClass;
 
-namespace API.Entity.SecrurityClass
+namespace API.DAL.Entity.SecrurityClass
 {
-    public class BasicAunteficationHandler:AuthenticationHandler<AuthenticationSchemeOptions>
+    public class BasicAunteficationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         private readonly IUserService _userService;
-        public BasicAunteficationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock,IUserService user) : base(options, logger, encoder, clock)
+        public BasicAunteficationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IUserService user) : base(options, logger, encoder, clock)
         {
             _userService = user;
         }
@@ -22,7 +23,7 @@ namespace API.Entity.SecrurityClass
             // No authorization header, so throw no result.
             if (!Request.Headers.ContainsKey("Authorization"))
             {
-                
+
                 return Task.FromResult(AuthenticateResult.Fail("Missing Authorization header"));
             }
 

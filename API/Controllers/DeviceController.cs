@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using API.Entity.SecrurityClass;
-using API.Entity.APIResponce;
-using API.Entity.Models;
 using System.Text;
+using API.DAL.Entity.APIResponce;
+using API.DAL.Entity.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -23,7 +23,7 @@ namespace API.Controllers
         // GET: api/<DeviceController>
         [HttpGet, BasicAuthorization]
         [Route("")]
-        public BaseResponse<List<Device>> GetDevicebyId([FromQuery(Name = "id")] int id)
+        public BaseResponse<DataResponce> GetDevicebyId([FromQuery(Name = "id")] int id)
         {            
             return Device.GetDevicebyId(id);
         }

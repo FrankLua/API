@@ -1,4 +1,4 @@
-﻿namespace API.Entity
+﻿namespace API.DAL.Entity
 {
     public class APIDatabaseSettings : IAPIDatabaseSettings
     {
