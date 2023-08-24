@@ -14,7 +14,7 @@ namespace API.Services
         {
             var database = mongoClient.GetDatabase(settings.DatabaseName);
             _user = database.GetCollection<User>("Users");
-            _device = database.GetCollection<Device>("Device");
+            _device = database.GetCollection<Device>("Devices");
         }
 
         public BaseResponse<User> CheakUser(string username, string password)
@@ -43,26 +43,13 @@ namespace API.Services
         }
 
         public BaseResponse<UserResponce> GetUserInfo(string login)
-        {
+        {            
             BaseResponse<UserResponce> answer = new BaseResponse<UserResponce>();
             try
             {
-                User user = _user.Find(user => true).ToList().First();
+                User user = _user.Find(user => true).ToList().Where(user => user.login == login).First();
+                Loger.WriterLogMethod("GetUserInfo", "I read it, users db");
                 List<Device> list = _device.Find(device => true).ToList();
-                List<int> deviceid = new List<int>();
-                foreach (Device device in list)
-                {
-                    if(device.User_Id == user.id)
-                    {
-                       deviceid.Add(device.id);
-                    }
-
-                }
-                if(deviceid.Count > 0)
-                {
-                    user.devices = new int[deviceid.Count];
-                    user.devices = deviceid.ToArray();
-                }
                 answer.data = new UserResponce(user);
                 return answer;
                 
@@ -76,13 +63,34 @@ namespace API.Services
 
         public BaseResponse<DataResponce> GetUserDevice(string login)
         {
+            
             BaseResponse<DataResponce> answer = new BaseResponse<DataResponce>();           
-            answer.data = new DataResponce();
+            
             try
             {
                 User user = _user.Find(user => true).ToList().Where(user => user.login == login).First();
+                Loger.WriterLogMethod("GetUserDevice", "I read it, users db");
+                List<Device> listdevice = _device.Find(divice => true).ToList();
+                if(listdevice != null && user.devices != null)
+                {
+                    answer.data = new DataResponce();
+                    List<DeviceResponce>userdevice = new List<DeviceResponce>();
+                    foreach (int id in user.devices)
+                    {
+                        foreach(Device device in listdevice)
+                        {
+                            if (device.id == id)
+                            {
+                                DeviceResponce deviceResponce = new DeviceResponce(device);
+                                userdevice.Add(deviceResponce);
+                                
+                            }
+                        }                        
+                    }
+                    answer.data.devices = userdevice;
+
+                }
                 
-                answer.data.devices = _device.Find(divice => true).ToList().Where(device => device.User_Id == user.id).ToList();
                 if(answer.data == null)
                 {
                     answer.error = "Device not found";

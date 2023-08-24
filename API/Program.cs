@@ -16,6 +16,9 @@ namespace API
             var builder = WebApplication.CreateBuilder(args);
 
              var service = builder.Services;
+
+
+
             service.Configure<APIDatabaseSettings>(
                 builder.Configuration.GetSection(nameof(APIDatabaseSettings)));
             service.AddSingleton<IAPIDatabaseSettings>(sp => 

@@ -4,6 +4,9 @@ using API.DAL.Entity.ResponceModels;
 using API.Entity.SecrurityClass;
 using API.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata;
+
+using System.Text;
 
 namespace API.Controllers
 {
@@ -21,9 +24,13 @@ namespace API.Controllers
         [Route("")]
         public BaseResponse<UserResponce> GetUserInfo()
         {
+            
+
             var userlogin = User.Identity.Name;
 
-            return _user.GetUserInfo(userlogin);
+            Loger.WriterLogMethod("GetUserInfo", "Called");
+
+            return  _user.GetUserInfo(userlogin);
         }
 
         [HttpGet, BasicAuthorization]
@@ -34,5 +41,6 @@ namespace API.Controllers
 
             return _user.GetUserDevice(userlogin); 
         }
+
     }
 }

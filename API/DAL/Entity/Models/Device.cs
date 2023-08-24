@@ -10,14 +10,15 @@ namespace API.DAL.Entity.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string _id { get; set; }
         [BsonElement("id")]
-        public int id { get; set; }        
+        public int id { get; set; }
+        [BsonElement("name")]
+        public string name { get; set; }    
         [BsonElement("address")]
         public string adress { get; set; }
         [BsonElement("media_playlist")]
         public int media_play_list { get; set; }
 
-        [BsonElement("user_id")]
-        public int User_Id { get; set; }
+
         [BsonElement("ad_playlist")]
         public int? ad_playlist { get; set; }
 
