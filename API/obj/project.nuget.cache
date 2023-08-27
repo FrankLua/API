@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "AY6BtgMQj4non3eH9BNSlNN8OzUEnJYfBmMnt6lbp1ubzLflUaaZiHhDFoSXCtXf4ixwge3GPcgeKwe4ST/8HA==",
+  "dgSpecHash": "dHNTpa5DfzZbpdtHPD2Wdf4RrrpgLZZll53djXIKSnn+B6uYUia1GTsFg72+wgmNz5U8CZv6Vh/RJ6jN5GK2Wg==",
   "success": true,
   "projectFilePath": "C:\\Users\\sosis\\source\\repos\\API\\API\\API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\sosis\\.nuget\\packages\\awssdk.core\\3.7.201.4\\awssdk.core.3.7.201.4.nupkg.sha512",
+    "C:\\Users\\sosis\\.nuget\\packages\\awssdk.extensions.netcore.setup\\3.7.7\\awssdk.extensions.netcore.setup.3.7.7.nupkg.sha512",
     "C:\\Users\\sosis\\.nuget\\packages\\awssdk.s3\\3.7.202.4\\awssdk.s3.3.7.202.4.nupkg.sha512",
     "C:\\Users\\sosis\\.nuget\\packages\\awssdk.securitytoken\\3.7.100.14\\awssdk.securitytoken.3.7.100.14.nupkg.sha512",
     "C:\\Users\\sosis\\.nuget\\packages\\dnsclient\\1.6.1\\dnsclient.1.6.1.nupkg.sha512",

@@ -2,11 +2,11 @@
 using API.DAL.Entity.Models;
 using API.DAL.Entity.ResponceModels;
 
-namespace API.Services
+namespace API.Services.ForAPI
 {
     public interface IUserService
     {
-        public BaseResponse<User>  CheakUser(string username, string password);
+        public BaseResponse<User> CheakUser(string username, string password);
 
 
         public BaseResponse<DataResponce> GetUserDevice(string login);

@@ -6,7 +6,7 @@ using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using System.Collections.Generic;
 
-namespace API.Services
+namespace API.Services.ForAPI
 {
     public class DeviceService : IDeviceService
     {
@@ -22,19 +22,19 @@ namespace API.Services
 
         public BaseResponse<DeviceResponce> GetDevice(int id)
         {
-            
-            BaseResponse<DeviceResponce> answer = new BaseResponse<DeviceResponce> ();            
+
+            BaseResponse<DeviceResponce> answer = new BaseResponse<DeviceResponce>();
             try
             {
-                Device device  = _device.Find(device => device.id == id).First();
+                Device device = _device.Find(device => device.id == id).First();
                 Loger.WriterLogMethod("GetDevice", "I read it, divice db");
                 if (device == null)
                 {
                     answer.error = "Device not found!";
                     return answer;
                 }
-                answer.data = new DeviceResponce(device);               
-                
+                answer.data = new DeviceResponce(device);
+
                 return answer;
             }
             catch (Exception ex)
@@ -45,6 +45,6 @@ namespace API.Services
 
         }
 
-        
+
     }
 }

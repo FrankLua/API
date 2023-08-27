@@ -4,7 +4,7 @@ using API.DAL.Entity.APIResponce;
 using API.DAL.Entity.Models;
 using API.DAL.Entity.ResponceModels;
 
-namespace API.Services
+namespace API.Services.ForAPI
 {
     public class UserService : IUserService
     {
@@ -39,11 +39,11 @@ namespace API.Services
                 response.error = "Crush";
                 return response;
             }
-            
+
         }
 
         public BaseResponse<UserResponce> GetUserInfo(string login)
-        {            
+        {
             BaseResponse<UserResponce> answer = new BaseResponse<UserResponce>();
             try
             {
@@ -52,7 +52,7 @@ namespace API.Services
                 List<Device> list = _device.Find(device => true).ToList();
                 answer.data = new UserResponce(user);
                 return answer;
-                
+
             }
             catch (Exception ex)
             {
@@ -63,43 +63,43 @@ namespace API.Services
 
         public BaseResponse<DataResponce> GetUserDevice(string login)
         {
-            
-            BaseResponse<DataResponce> answer = new BaseResponse<DataResponce>();           
-            
+
+            BaseResponse<DataResponce> answer = new BaseResponse<DataResponce>();
+
             try
             {
                 User user = _user.Find(user => true).ToList().Where(user => user.login == login).First();
                 Loger.WriterLogMethod("GetUserDevice", "I read it, users db");
                 List<Device> listdevice = _device.Find(divice => true).ToList();
-                if(listdevice != null && user.devices != null)
+                if (listdevice != null && user.devices != null)
                 {
                     answer.data = new DataResponce();
-                    List<DeviceResponce>userdevice = new List<DeviceResponce>();
+                    List<DeviceResponce> userdevice = new List<DeviceResponce>();
                     foreach (int id in user.devices)
                     {
-                        foreach(Device device in listdevice)
+                        foreach (Device device in listdevice)
                         {
                             if (device.id == id)
                             {
                                 DeviceResponce deviceResponce = new DeviceResponce(device);
                                 userdevice.Add(deviceResponce);
-                                
+
                             }
-                        }                        
+                        }
                     }
                     answer.data.devices = userdevice;
 
                 }
-                
-                if(answer.data == null)
+
+                if (answer.data == null)
                 {
                     answer.error = "Device not found";
                     return answer;
                 }
- 
+
                 return answer;
             }
-            catch 
+            catch
             {
                 answer.error = "Crush!";
                 return answer;

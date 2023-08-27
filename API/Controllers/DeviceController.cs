@@ -1,11 +1,11 @@
-﻿using API.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using API.Entity.SecrurityClass;
 using System.Text;
 using API.DAL.Entity.APIResponce;
 using API.DAL.Entity.Models;
 using API.DAL.Entity.ResponceModels;
+using API.Services.ForAPI;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 

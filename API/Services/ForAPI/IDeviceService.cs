@@ -2,7 +2,7 @@
 using API.DAL.Entity.Models;
 using API.DAL.Entity.ResponceModels;
 
-namespace API.Services
+namespace API.Services.ForAPI
 {
     public interface IDeviceService
     {

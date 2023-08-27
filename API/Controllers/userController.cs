@@ -2,7 +2,7 @@
 using API.DAL.Entity.Models;
 using API.DAL.Entity.ResponceModels;
 using API.Entity.SecrurityClass;
-using API.Services;
+using API.Services.ForAPI;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata;
 

@@ -4,10 +4,10 @@ using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Text;
-using API.Services;
 using API.DAL.Entity.Models;
 using API.Entity.SecrurityClass;
 using API.DAL.Entity.APIResponce;
+using API.Services.ForAPI;
 
 namespace API.DAL.Entity.SecrurityClass
 {
