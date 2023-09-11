@@ -1,0 +1,148 @@
+
+.added-Content {
+    margin-top: 20px;
+    text-align: center;
+   
+}
+.btn {
+    border: none;
+    cursor: pointer;
+    background-color: greenyellow;
+    border-radius: 25px;
+    width: 250px;
+    height: 55px;
+}
+
+.modal-overlay {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+   
+}
+
+.modal-window {
+    background-color: white;
+    width: 30%;
+    height: 30%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: none;
+    
+}
+
+.window-title {
+    text-align: center;
+}
+.lable-page {
+    >p
+
+{
+    text-align: center;
+    margin: 0;
+}
+
+}
+
+table,
+td {
+    border: 1px solid #333;
+}
+
+.main-content {
+    justify-content: center;
+}
+
+.main-table {
+    width: 100%;
+    justify-content: center;
+    padding: 100px 250px;
+    >tbody
+
+{
+    >tr
+
+{
+    >td
+
+{
+    background-color: #333;
+    color: #fff;
+}
+
+}
+}
+
+> thead {
+    >tr
+
+{
+    >th
+
+{
+    border: 1px solid #333;
+}
+
+}
+}
+}
+.message-state-1 {
+    text-align: center;
+    right: 0px;
+    position: fixed;
+    background-color: brown;
+    width: auto;
+    height: auto;
+    opacity: 1;
+    transition: 5s;
+    >p
+
+{
+    margin: 0;
+}
+
+}
+
+.message-state-2 {
+    text-align: center;
+    right: 0px;
+    position: fixed;
+    background-color: brown;
+    width: auto;
+    height: auto;
+    opacity: 0;
+    transition: 5s;
+    >p
+
+{
+    margin: 0;
+}
+}
+.loading {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    color: aliceblue;
+    transition: all 0.3s ease-in-out;
+}

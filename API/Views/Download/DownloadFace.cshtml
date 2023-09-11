@@ -1,0 +1,95 @@
+﻿@{
+	ViewBag.Title = "DownloadFace";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+@model List<API.DAL.Entity.Models.Media_file>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<head>
+	<link href="~/css/Download.css" rel="stylesheet" asp-append-version="true" />
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="~/js/DW/File-Modal-window.js" defer></script>
+	<script src="~/js/DW/ShowBox.js" defer></script>
+	<script src="~/js/DW/DWsendDelete.js" defer></script>
+
+</head>
+<div class="lable-page">
+
+	<p> My Files</p>
+
+</div>
+
+<div class="main-content">
+	@if (ViewBag.Answer != null)
+	{
+		<div id="message" title="@ViewBag.Answer"></div>
+		
+	}
+	else
+	{
+			<div id="message"></div>
+	}
+
+	@if(Model == null)
+	{
+		<h2>@ViewBag.Exaption</h2>
+	}	
+	else
+	{
+		
+		
+			<table class="main-table" id="table">
+
+				<thead>
+					<tr>
+						<th>Имя файла</th>
+						<th>Тип</th>
+						<th>Действия</th>
+					</tr>
+
+				</thead>
+				@foreach (var item in Model)
+				{
+					<tbody>
+					<tr id="@item._id">
+						<td>@item.name</td>
+						<td>@item.mime_type</td>
+						<td><button id ="button" value = "@item._id" >Удалить</button></td>
+					</tr>
+				</tbody>
+			
+				}
+		</table>
+		
+	}
+
+
+	
+</div>
+<div class="added-Content">
+	<button id="btn" class="btn" data-path="one">dowload file!</button>
+	<div class="modal-overlay" id="modal-overlay">
+		<div class="modal-window" data-target="one">
+			<form asp-controller="Download" asp-action="DownloadFace" method="post" enctype="multipart/form-data">
+				<div>
+					<div class="window-title">
+						<p>Важная информация по загрузке!</p>
+						<p>
+							Загружать файлы можно только формата:
+							.mp4 (video), audio/mp4.
+						</p>
+						<input type="file" name="file">
+						<br>
+						<br>
+						<button id="load" type="submit"> Send </button>
+					</div>
+
+
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<div id="loading" class="loading">
+	Loading!
+</div>

@@ -1,0 +1,11 @@
+﻿using API.DAL.Entity.APIResponce;
+using API.DAL.Entity.Models;
+using API.DAL.Entity.ResponceModels;
+
+namespace API.Services.ForAPI.Int
+{
+    public interface IDevice_Service
+    {
+		Task<BaseResponse<DeviceResponce>> GetDevice(string id);
+    }
+}

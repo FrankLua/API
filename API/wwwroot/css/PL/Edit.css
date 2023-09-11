@@ -1,0 +1,134 @@
+.added-Content {
+    margin-top: 20px;
+    text-align: center;
+}
+.btn {
+    border: none;
+    cursor: pointer;
+    background-color: greenyellow;
+    border-radius: 25px;
+    width: 250px;
+    height: 55px;
+}
+.Edit-window{
+    text-align:center;
+    margin: 2%;
+    border:solid 1px black;
+}
+.main-table-playlist {
+    
+    width: 100%;
+    
+    
+    >thead{
+              >tr{
+                     >th
+{
+    background-color: #333;
+    color: #fff;
+}
+                 }
+          }
+}
+.main-table-playlist {
+ 
+    >tbody
+
+{
+    >tr
+
+{
+    >th
+
+{
+    background-color: brown;
+    color: #fff;
+}
+
+}
+}
+}
+.tables {
+    align-content:center
+}
+.Edit-window {
+    text-align: center;
+    margin: 2%;
+    border: solid 1px black;
+}
+
+.main-table-playlist {
+    width: 100%;
+    >thead
+
+{
+    >tr
+
+{
+    >th
+
+{
+    background-color: #333;
+    color: #fff;
+}
+
+}
+}
+}
+
+.main-table-playlist {
+    >tbody
+
+{
+    >tr
+
+{
+    >td
+
+{
+    background-color: brown;
+    color: #fff;
+}
+
+}
+}
+}
+
+.tables {
+    align-content: center
+}
+
+.menu-board {
+    display: flex;
+    justify-content: space-between;
+    margin: 1% 2% 1% 2%;
+    >button
+
+{
+    height: 45px;
+    width: 100px;
+}
+
+}
+
+.hide {
+    display: none;
+}
+
+.lable-page {
+    height: 500px;
+    margin: 1% 2% 1% 2%;
+    border-radius: 10px;
+    overflow-y: scroll;
+}
+
+    .lable-page::-webkit-scrollbar {
+        width: 10px;
+        background-color: #545454;
+        border-radius: 10px;
+    }
+
+    .lable-page::-webkit-scrollbar-thumb {
+        background-color: #171717;
+        border-radius: 10px;
+    }
