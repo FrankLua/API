@@ -9,6 +9,7 @@ using API.DAL.Entity.SupportClass;
 using MongoDB.Bson;
 using Amazon.Runtime.Internal;
 using API.Services.ForAPI.Int;
+using Microsoft.AspNetCore.RateLimiting;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,13 +27,13 @@ namespace API.Controllers.Api
         }
 
         // GET: api/<DeviceController>
+        [EnableRateLimiting("ForOther")]
         [HttpGet, BasicAuthorization]
         [Route("")]
         public async Task<BaseResponse<DeviceResponce>> GetDevicebyId([FromQuery(Name = "id")] string id)
         {
-            await Loger.BeginMethod(Request);
-            var responce = await Device.GetDevice(id);
-            await Loger.FinishMethod(Request,"Successful",responce.ToJson());
+            
+            var responce = await Device.GetDevice(id);            
             return responce;
         }
         [HttpGet]

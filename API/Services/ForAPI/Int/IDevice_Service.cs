@@ -7,5 +7,7 @@ namespace API.Services.ForAPI.Int
     public interface IDevice_Service
     {
 		Task<BaseResponse<DeviceResponce>> GetDevice(string id);
+
+        BaseResponse<DeviceResponce> GetDeviceSync(string id);
     }
 }

@@ -101,6 +101,12 @@ namespace API.Services.ForS3.Rep
                 */
                 return response;
             }
+            catch(AmazonS3Exception ex)
+            {
+
+                Loger.ExaptionForNotFound(ex, "AWS-GetFIle", id: file._id.ToString(),add: null);
+                return null;
+            }
             catch (Exception ex)
             {
                 Loger.Exaption(ex, "AWS3");
@@ -139,10 +145,10 @@ namespace API.Services.ForS3.Rep
                 */
                 return response;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return null;
-                throw;
+                Loger.Exaption(ex, "AWS3");
+                return null;                
             }
         }
         public async Task<bool> UploadFileAsync(IFormFile file)

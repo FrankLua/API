@@ -11,6 +11,7 @@ using MongoDB.Bson.IO;
 using API.DAL.Entity.SupportClass;
 using API.Services.ForS3.Int;
 using API.Services.ForS3.Rep;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace API.Controllers.Api
 {
@@ -32,51 +33,48 @@ namespace API.Controllers.Api
             _appConfiguration = appConfiguration;
             _aws3Services = new Aws3Services(_appConfiguration.AwsAccessKey, _appConfiguration.AwsSecretAccessKey, _appConfiguration.BucketName, _appConfiguration.URL);
         }
+        [EnableRateLimiting("ForFile")]
         [HttpGet]
-        [Route("get_files")]
+        [Route("get_file")]
         public async Task<IActionResult> get_files([FromQuery(Name = "id")] string fileid)
         {
-            await Loger.BeginMethod(Request);
-            Adfile file = await _Ad_files.getAdfile(fileid);
+           
+            var file = await _Ad_files.getAdfile(fileid);
 
             var document = await _aws3Services.DownloadAdFileAsync(file);
             
             if (document == null)
-            {
-                await Loger.FinishMethod(Request, "Not Found...","None");
-                return NotFound();
-                
+            {                
+                return NotFound();                
             }
-            await Loger.FinishMethod(Request, "Ok",document.ContentLength.ToString());
+            
             return File(document.ResponseStream, file.mime_type, file.name);
 
         }
+        [EnableRateLimiting("ForOther")]
         [HttpGet]
         [Route("get_playlist")]
-        public async Task<BaseResponse<Media_Ad_playlist>> get_playlist([FromQuery(Name = "deviceId")] string deviceid)
+        public async Task<BaseResponse<Media_Ad_playlist>> get_playlist([FromQuery(Name = "Id")] string deviceid)
         {
-            await Loger.BeginMethod(Request);
+            
             BaseResponse<Media_Ad_playlist> answer = new BaseResponse<Media_Ad_playlist>();
             var device = await _device.GetDevice(deviceid);
             if (device.data == null)
             {
                 answer.error = "Crush";
-                await Loger.FinishMethod(Request, answer.error,answer.ToJson());
+                
                 return answer;
-
-
-
             }
             else if (device.data.ad_playlist == null)
             {
                 answer.error = "Playlist Not Found";
-                await Loger.FinishMethod(Request, answer.error, answer.ToJson());
+                
                 return answer;
             }
             else
             {
                 string playlist = device.data.ad_playlist;
-                await Loger.FinishMethod(Request, "successful!", answer.ToJson());
+                
                 return await _playlist.GetPlaylistAsyncbyId(playlist);
             }
 

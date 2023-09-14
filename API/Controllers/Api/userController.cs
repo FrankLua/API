@@ -6,6 +6,7 @@ using API.DAL.Entity.SupportClass;
 using API.Entity.SecrurityClass;
 using API.Services.ForAPI.Int;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Reflection.Metadata;
 
 using System.Text;
@@ -22,20 +23,21 @@ namespace API.Controllers.Api
         {
             _user = userService;
         }
+        [EnableRateLimiting("ForOther")]
         [HttpGet, BasicAuthorization]
         [Route("")]
         public async Task<BaseResponse<UserResponce>> GetUserInfo()
         {
-            await Loger.BeginMethod(Request);
+            
             var userlogin = User.Identity.Name;
-            return _user.GetUserInfo(userlogin);
+            return await _user.GetUserInfo(userlogin);
         }
-
+        [EnableRateLimiting("ForOther")]
         [HttpGet, BasicAuthorization]
         [Route("devices")]
         public async Task<BaseResponse<DataResponce>> GetUserDevice()
         {
-            Loger.BeginMethod(Request);
+            
             var userlogin = User.Identity.Name;
             return await _user.GetUserDevice(userlogin);
         }

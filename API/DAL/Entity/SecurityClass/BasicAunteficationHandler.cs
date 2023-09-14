@@ -76,7 +76,7 @@ namespace API.DAL.Entity.SecrurityClass
             // Authenicate the client using basic authentication
             var client = new BasicAuthenticationClient
             {
-                AuthenticationType = BasicAuthenticationDefaults.AuthenticationScheme,
+                AuthenticationType = "Basic",
                 IsAuthenticated = true,
                 Name = clientId
             };

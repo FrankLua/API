@@ -5,6 +5,8 @@ using API.DAL.Entity.SupportClass;
 using API.Entity.SecrurityClass;
 using API.Services.ForAPI;
 using API.Services.ForS3.Configure;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -17,6 +19,7 @@ using Microsoft.Extensions.Options;
 
 using MongoDB.Driver;
 using System.IO.Compression;
+using Microsoft.CodeAnalysis;
 
 namespace API
 {
@@ -32,8 +35,12 @@ namespace API
 
                 var builder = WebApplication.CreateBuilder(args);
 
-            var service = builder.Services;           
-            
+            var service = builder.Services;
+            ScopeBuilder.InitializerRateLimiter(service);
+
+
+
+
             service.Configure<APIDatabaseSettings>(
             builder.Configuration.GetSection(nameof(APIDatabaseSettings)));
 
@@ -47,9 +54,13 @@ namespace API
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" });
             });
 
-            
 
-            service.AddSingleton<IAPIDatabaseSettings>(sp => 
+                // добавление кэширования
+                builder.Services.AddMemoryCache();
+
+
+
+                service.AddSingleton<IAPIDatabaseSettings>(sp => 
             sp.GetRequiredService<IOptions<APIDatabaseSettings>>().Value);
             service.AddSingleton<IMongoClient>(sp =>
             new MongoClient(builder.Configuration.GetValue<string>("APIDatabaseSettings:ConnectionString")));
@@ -61,7 +72,7 @@ namespace API
             service.AddEndpointsApiExplorer();
             service.AddSwaggerGen();
             service.AddAuthentication()
-.AddScheme<AuthenticationSchemeOptions, BasicAunteficationHandler>(BasicAuthenticationDefaults.AuthenticationScheme, null);
+.AddScheme<AuthenticationSchemeOptions, BasicAunteficationHandler>("Basic", null);
             service.AddControllersWithViews();
             service.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie(options => //CookieAuthenticationOptions
@@ -77,7 +88,7 @@ namespace API
                 app.UseSwaggerUI();
             }
 
-            
+                
             app.UseResponseCompression(); // подключаем сжатие
 
             
@@ -90,8 +101,9 @@ namespace API
 
            
             app.MapControllers();
-            
-            app.Run();
+                app.UseRateLimiter();
+
+                app.Run();
             
             }
             catch(Exception ex)

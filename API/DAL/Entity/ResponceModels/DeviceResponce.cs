@@ -30,6 +30,24 @@ namespace API.DAL.Entity.ResponceModels
 
             intervals = device.intervals;
         }
+        public DeviceResponce(List<Device> devices)
+        {
+            foreach (var device in devices)
+            {
+                id = device._id;
+
+                name = device.name;
+
+                address = device.adress;
+
+                media_playlist = device.media_play_list;
+
+                ad_playlist = device.ad_playlist;
+
+                intervals = device.intervals;
+            }
+            
+        }
 
 
     }

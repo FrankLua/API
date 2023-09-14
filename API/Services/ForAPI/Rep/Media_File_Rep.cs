@@ -7,6 +7,7 @@ using System;
 using API.Services.ForS3;
 using API.Services.ForS3.Configure;
 using API.Services.ForAPI.Int;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace API.Services.ForAPI.Rep
 {
@@ -14,17 +15,19 @@ namespace API.Services.ForAPI.Rep
     {
         private readonly IMongoCollection<Media_file> _media_file;
         private readonly IMongoCollection<User> _user;
+        IMemoryCache _cache;
 
 
 
-
-        public Media_File_Rep(IAPIDatabaseSettings settings, IMongoClient mongoClient)
+        public Media_File_Rep(IAPIDatabaseSettings settings, IMongoClient mongoClient, IMemoryCache memoryCache)
         {
             var database = mongoClient.GetDatabase(settings.DatabaseName);
 
             _media_file = database.GetCollection<Media_file>("Media Files");
 
             _user = database.GetCollection<User>("Users");
+
+            _cache = memoryCache;
         }
 
         public async Task<string> AddFile(IFormFile file, string login)
@@ -65,6 +68,7 @@ namespace API.Services.ForAPI.Rep
                 await _user.UpdateOneAsync(Builders<User>.Filter.Eq("login", $"{login}"), Builders<User>.Update.Pull("media-files", id));
                 return null;
             }
+
             catch (Exception ex)
             {
                 return $"Error: {ex}";
@@ -74,19 +78,37 @@ namespace API.Services.ForAPI.Rep
 
         public async Task<Media_file> GetFile(string mongo_db_id)
         {
-            Media_file file = null;
+            
             try
             {
-                file = await _media_file.FindAsync(file => file._id.ToString() == mongo_db_id).Result.FirstAsync();
+                _cache.TryGetValue(mongo_db_id, out Media_file? file);
+                if(file == null)
+                {
+                    var bridge = await _media_file.FindAsync(file => file._id.ToString() == mongo_db_id);
 
-                file.folder = MimeType.GetFolderName(file.mime_type);
+                    file = await bridge.FirstAsync();
 
-                return file;
+                    file.folder = MimeType.GetFolderName(file.mime_type);
+
+                    _cache.Set(mongo_db_id, file, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+                    return file;
+                }
+                else
+                {
+                    return file;
+                }
+               
+            }
+            catch (InvalidOperationException ex)
+            {
+                string[] par = new string[] { "Media_file" };
+                Loger.ExaptionForNotFound(ex, method: "GetFile", mongo_db_id, par);                
+                return null;
             }
             catch (Exception ex)
             {
                 Loger.Exaption(ex,"GetFile");
-                return file;
+                return null;
             }
         }
 
@@ -101,6 +123,12 @@ namespace API.Services.ForAPI.Rep
                 }
 
                 return files;
+            }
+            catch (InvalidOperationException ex)
+            {
+                string[] par = new string[] { "Media_file" };
+                Loger.ExaptionForNotFound(ex, method: "GetFiles", "List-Files", par);
+                return null;
             }
             catch (Exception ex)
             {

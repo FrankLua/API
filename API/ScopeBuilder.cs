@@ -1,6 +1,8 @@
 ﻿using API.Services.ForAPI.Int;
 using API.Services.ForAPI.Rep;
 using API.Services.ForS3.Configure;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 namespace API
 {
@@ -15,6 +17,22 @@ namespace API
             service.AddScoped<IAppConfiguration, AppConfiguration>();
             service.AddScoped<IMedia_Playlist_Service, Media_Playlist_Rep>();
             service.AddScoped<IMedia_File_Service, Media_File_Rep>();
+        }
+        public static void InitializerRateLimiter(this IServiceCollection service)
+        {
+            service.AddRateLimiter(opt => opt.AddConcurrencyLimiter("ForFile", parametrs =>
+            {
+                parametrs.PermitLimit = 5;
+                parametrs.QueueLimit = 5;
+                parametrs.QueueProcessingOrder = QueueProcessingOrder.NewestFirst;
+            }).RejectionStatusCode = 423);
+            service.AddRateLimiter(opt => opt.AddConcurrencyLimiter("ForOther", parametrs =>
+            {
+                parametrs.PermitLimit = 10;
+                parametrs.QueueLimit = 25;
+                parametrs.QueueProcessingOrder = QueueProcessingOrder.NewestFirst;
+            }).RejectionStatusCode = 423);
+
         }
     }
     

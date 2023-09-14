@@ -9,6 +9,7 @@ using API.Services.ForS3.Configure;
 using API.Services.ForS3.Int;
 using API.Services.ForS3.Rep;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using MongoDB.Bson;
 using System.Net;
 using TimewebNet.Exceptions;
@@ -37,8 +38,7 @@ namespace API.Controllers.Api
 
         [Route("videoPost")]
         public async Task<BaseResponse<FileContentResult>> UploadDocumentToS3([FromForm] IFormFile file)
-        {
-           await Loger.BeginMethod(Request);
+        {            
             try
             {
 
@@ -57,24 +57,26 @@ namespace API.Controllers.Api
             catch (Exception ex)
             {
                 BaseResponse<FileContentResult> badResponse = new BaseResponse<FileContentResult>();
+                Loger.Exaption(ex, "Upload");
                 badResponse.error = "Error";
                 return badResponse;
             }
         }
-
+        
         [HttpGet]
-        [Route("Get_playlist")]
+        [EnableRateLimiting("ForOther")]
+        [Route("get_playlist")]
         public async Task<BaseResponse<Media_playlist_for_api>> Get_playlist([FromQuery(Name = "deviceId")] string deviceId)
         {
-            await Loger.BeginMethod(Request);
-            var device = await _device.GetDevice(deviceId);
+            
+            var device =  await _device.GetDevice(deviceId);
             if(device.data == null)
             {
                 BaseResponse<Media_playlist_for_api> badResponce = new BaseResponse<Media_playlist_for_api>();
                 badResponce.error = "Crush";
                 return badResponce;
             }
-            var playlistforweb = await _playlist.GetMediaPlaylist(device.data.media_playlist);
+            var playlistforweb =  await _playlist.GetMediaPlaylist(device.data.media_playlist);
             if (playlistforweb.data == null)
             {
                 BaseResponse<Media_playlist_for_api> badResponce = new BaseResponse<Media_playlist_for_api>();
@@ -83,23 +85,27 @@ namespace API.Controllers.Api
             }
             BaseResponse<Media_playlist_for_api> answer = new BaseResponse<Media_playlist_for_api>();
             answer.data = new Media_playlist_for_api(playlistforweb.data);
-            await Loger.FinishMethod(Request, "Successful",answer.ToJson());
+            
             return answer;
         }
 
-
+        [EnableRateLimiting("ForFile")]
         [HttpGet]
-        [Route("")]
-        public async Task<FileStreamResult> Get_file([FromQuery(Name = "Id")] string fileid)
+        [Route("file")]
+        public async Task<IActionResult> Get_file([FromQuery(Name = "Id")] string fileid)
         {
-            await Loger.BeginMethod(Request);
+            
             Media_file file = await _file.GetFile(fileid);
             if(file == null)
-            {                
-                return null;
+            {
+                return NotFound();
             }
-            var document = _aws3Services.DownloadFileAsync(file).Result;
-            await Loger.FinishMethod(Request, "Successful",document.ReplicationStatus.Value);
+            var document = await _aws3Services.DownloadFileAsync(file);
+            if (document == null)
+            {
+
+                return NotFound();
+            }            
             return File(document.ResponseStream, file.mime_type, file.name);
         }
     }

@@ -22,46 +22,8 @@ namespace API.DAL.Entity.SupportClass
         public static void WriterLogMethod(string Method, string message = "No message")
         {
             Console.WriteLine($"Method: {Method}, \n Message: {message}");
-        }
-        public static async Task BeginWriter(string Method, HttpRequest req)
-        {
-            StringBuilder sb = new StringBuilder();
-            _watch = Stopwatch.StartNew(); //Setup timer                
-
-                string querry = req.QueryString.Value;                
-                var bodyStr = WriterBody(req);
-                sb.Append(str);
-                sb.Append("\n============================Begin-method=============================\n");
-                sb.Append($"\n\tMethod: {Method}, was called in time: {DateTime.Now}\n");
-                sb.Append($"\n\t\tQuerry: {querry}\n");
-                sb.Append($"\n\t\t\tBody: {bodyStr}\n");
-                sb.Append(str);
-                File.AppendAllText(_logfile.FullName, sb.ToString());
-                
-
-            
-
-            sb.Clear();
-        }
-        public static async Task WriterFinish(string Method,string message,string responce ,HttpRequest? req) {
-            StringBuilder sb = new StringBuilder();
-            _watch.Stop();//Setup timer          
-            decimal time = (decimal)_watch.ElapsedMilliseconds / 1000;    
-            
-
-
-                
-                
-                sb.Append(str);
-            sb.Append("\n============================Finish-method=============================\n");
-            sb.Append($"\nMethod: {Method}, the method finish has finish, it time :{time}\n");
-                sb.Append($"\n\tResponce: {responce}\n");
-                sb.Append($"\n\t\tFile size:   {message}\n");
-            sb.Append(str);
-                File.AppendAllText(_logfile.FullName, sb.ToString());
-
-                  
-        }
+        }      
+      
         public static void CreateFirstTxt()
         {
 
@@ -84,34 +46,32 @@ namespace API.DAL.Entity.SupportClass
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(str);
-            sb.Append($"\nAttention!Attention!Attention!Attention!Attention!");
+            sb.Append($"\nExaption!");
             sb.Append($"\n\tApplication detectid error: \n{ex.Message}\n in time: {DateTime.Now}\n");
             sb.Append($"\n\t\tAn error was created in the method{method}\n");
             sb.Append($"\n\t\t\tStack: {ex.StackTrace}\n");
-            sb.Append($"\nAttention!Attention!Attention!Attention!Attention!");
+            sb.Append($"\nExaption!");
             sb.Append(str);
             File.AppendAllText(_logfile.FullName, sb.ToString());
             sb.Clear();
         }
-        public static string WriterBody(HttpRequest Request)
+        public static void ExaptionForNotFound(Exception ex, string method, string id,params string[]add)
         {
-            Request.EnableBuffering();
-            string bodyContent = new StreamReader(Request.Body).ReadToEndAsync().Result;
-            Request.Body.Position = 0;
-            return bodyContent;
+            add = add ?? new string[] { "none" };
+            StringBuilder sb = new StringBuilder();
+            sb.Append(str);
+            sb.Append($"\nNotFound!");
+            sb.Append($"\n\tApplication detectid error: \n{ex.Message}\n in time: {DateTime.Now}\n");
+            sb.Append($"\n\t\tData not found here ---> {method}\n");
+            sb.Append($"\n\t\tSearch it ---> {id}\n");             
+            sb.Append($"\n\t\tData base ---> {add[0]}\n");
+            sb.Append($"\n\t\t\tStack: {ex.StackTrace}\n");
+            sb.Append($"\nNotFound!");
+            sb.Append(str);
+            File.AppendAllText(_logfile.FullName, sb.ToString());
+            sb.Clear();
         }
-        public static async Task BeginMethod(HttpRequest? Request)
-        {
-			string Metodname = Request.RouteValues.Values.ToArray()[0].ToString();
-			await BeginWriter(Metodname, Request);
-			WriterLogMethod(Metodname, "Called");
-		}
-        public static async Task FinishMethod(HttpRequest? Request, string message,string responce)
-        {
-            string Metodname = Request.RouteValues.Values.ToArray()[0].ToString();
-            await WriterFinish(Metodname,responce,message, Request);
-            WriterLogMethod(Metodname, message);
-        }
+       
 
 
 

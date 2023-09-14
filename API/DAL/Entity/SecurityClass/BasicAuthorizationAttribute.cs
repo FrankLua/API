@@ -6,7 +6,7 @@ namespace API.Entity.SecrurityClass
     {
         public BasicAuthorizationAttribute()
         {
-            AuthenticationSchemes = BasicAuthenticationDefaults.AuthenticationScheme;
+            AuthenticationSchemes = "Basic";
         }
     }
 }

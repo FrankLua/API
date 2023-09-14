@@ -7,6 +7,7 @@ namespace API.Services.ForAPI.Int
     {
         Task<Media_file>? GetFile(string id);
 
+
         Task<List<Media_file>> GetFiles(List<string> ids);
 
 
