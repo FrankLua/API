@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width" />
-    
+    <meta name="viewport" content="width=device-width" />    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="~/css/Layout.css" asp-append-version="true">
+
+ 
     <title>@ViewBag.Title</title>
 </head>
 <body>
@@ -23,7 +24,7 @@
             <a class="menu-button" href="/Web/PlayLists/Face">>My Playlist</a>
             <a class="menu-button" href="/Web/Download/DownloadFace">>Download Files</a>
         </div>
-        <div class = "content">
+        <div class = "content" id="content">
             @RenderBody()
         </div>
     </div>

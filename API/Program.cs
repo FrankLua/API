@@ -89,7 +89,7 @@ namespace API
             }
 
                 
-            app.UseResponseCompression(); // подключаем сжатие
+           // app.UseResponseCompression(); // подключаем сжатие
 
             
             app.UseStaticFiles();        //static files for web

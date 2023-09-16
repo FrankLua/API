@@ -1,96 +1,51 @@
+
 <========================================================>
 
+============================Start-method=============================
+
 Приложение было запущенно!
- Время запуска: 09/11/2023 07:57:09
+ Время запуска: 09/14/2023 15:19:02
 
-<========================================================>le, was called in time: 09/11/2023 07:24:19
+<========================================================>
 
-Querry: ?id=64fa92f0e3a7691ba9f4c0fa
+<========================================================>
 
-Body: 
+NotFound!
+	Application detectid error: 
+Sequence contains no elements
+ in time: 09/14/2023 15:19:10
 
-Application detectid error: Sequence contains no elements in time: 09/11/2023 07:24:19
+		Data not found here ---> GetDevice
 
-Method: Get_file, was called in time: 09/11/2023 07:25:04
+		Search it ---> 64fa9328e3a7691ba9f4c0fc
 
-Querry: ?id=64ec781b978f890b887e3b3e
+		Data base ---> Device
 
-Body: 
+			Stack:    at System.Linq.ThrowHelper.ThrowNoElementsException()
+   at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   at MongoDB.Driver.IAsyncCursorExtensions.FirstAsync[TDocument](IAsyncCursor`1 cursor, CancellationToken cancellationToken)
+   at API.Services.ForAPI.Rep.Device_Rep.GetDevice(String id) in C:\Users\sosis\source\repos\API\API\Services\ForAPI\Rep\Device_Rep.cs:line 39
 
-Method: Get_file, was called in time: 09/11/2023 07:25:10
+NotFound!
+<========================================================>
 
-Querry: ?id=64ec781b978f890b887e3b3e
+<========================================================>
 
-Body: 
+NotFound!
+	Application detectid error: 
+Sequence contains no elements
+ in time: 09/14/2023 15:19:16
 
-Method: Get_file, was called in time: 09/11/2023 07:25:38
+		Data not found here ---> GetDevice
 
-Querry: ?id=64ec781b978f890b887e3b3e
+		Search it ---> 64fa9328e3a7691ba9f4c0fc
 
-Body: 
+		Data base ---> Device
 
-Method: Get_file, was called in time: 09/11/2023 07:26:28
+			Stack:    at System.Linq.ThrowHelper.ThrowNoElementsException()
+   at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   at MongoDB.Driver.IAsyncCursorExtensions.FirstAsync[TDocument](IAsyncCursor`1 cursor, CancellationToken cancellationToken)
+   at API.Services.ForAPI.Rep.Device_Rep.GetDevice(String id) in C:\Users\sosis\source\repos\API\API\Services\ForAPI\Rep\Device_Rep.cs:line 39
 
-Querry: ?id=64ec781b978f890b887e3b3e
-
-Body: 
-
-Method: Get_file, was called in time: 09/11/2023 07:26:50
-
-Querry: ?id=64ef139fb65c77b7691af975
-
-Body: 
-
-Method: Get_file, was called in time: 09/11/2023 07:29:57
-
-Querry: ?id=64ef139fb65c77b7691af975
-
-Body: 
-
-Method: Get_file, was called in time: 09/11/2023 07:36:36
-
-Querry: ?id=64ef139fb65c77b7691af975
-
-Body: 
-
-Method: Get_file, was called in time: 09/11/2023 07:39:23
-
-Querry: ?id=64ef139fb65c77b7691af975
-
-Body: 
-
-Method: Get_file, was called in time: 09/11/2023 07:44:20
-
-Querry: ?id=64ef139fb65c77b7691af975
-
-Body: 
-
-Method: Get_file, was called in time: 09/11/2023 07:44:35
-
-Querry: ?id=64ef139fb65c77b7691af975
-
-Body: 
-
-Method: Get_file, was called in time: 09/11/2023 07:48:32
-
-Querry: ?id=64ef139fb65c77b7691af975
-
-Body: 
-
-Method: Get_file, was called in time: 09/11/2023 07:48:41
-
-Querry: ?id=64ef139fb65c77b7691af975
-
-Body: 
-
-Method: Get_file, was called in time: 09/11/2023 07:53:19
-
-Querry: ?id=64ef139fb65c77b7691af975
-
-Body: 
-
-Method: Get_file, was called in time: 09/11/2023 07:53:33
-
-Querry: ?id=64ef139fb65c77b7691af975
-
-Body: 
+NotFound!
+<========================================================>

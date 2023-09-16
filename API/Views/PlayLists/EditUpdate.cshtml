@@ -1,24 +1,5 @@
-﻿@{
-	ViewBag.Title = "Edit";
-	Layout = "/Views/Shared/_Layout.cshtml";
-}
-@model API.DAL.Entity.Models.Media_playlist
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+﻿<div class="lable-page">
 
-<head>
-    <link href="~/css/PL/Edit.css" rel="stylesheet" asp-append-version="true" />
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="~/js/PL/Tables-Face.js" defer></script>
-</head>
-
-
-<div class="menu-board">
-    <input placeholder="Поиск по имени" type="text" id="elastic">
-    <h2 id ="main"title="@Model._id">@Model.name</h2>
-    <button class="save" id="save">Save</button>
-    
-</div>
-<div class="lable-page">
     <table class="main-table-playlist">
         <thead>
             <tr>
@@ -37,7 +18,7 @@
             </tr>
         </thead>
         <tbody id="source-list">
-            @if(ViewBag.Enabled_File != null)
+            @if (ViewBag.Enabled_File != null)
             {
                 @foreach (var item in ViewBag.Enabled_File)
                 {
@@ -57,7 +38,7 @@
                     </tr>
                 }
             }
-            
+
             @if (ViewBag.Disable_File != null)
             {
                 @foreach (var item in ViewBag.Disable_File)
@@ -78,11 +59,9 @@
                     </tr>
                 }
             }
-            
+
         </tbody>
     </table>
 </div>
-<div class="added-Content">
-    <a class = "card-title"href="/Web/PlayLists/Face">Назад</a>
-	<button class="btn" id="load"> Send </button>
-</div>
+
+

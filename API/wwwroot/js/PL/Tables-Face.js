@@ -36,24 +36,35 @@ btn_save.onclick = function () { //Функция для кнопки сохранить
         }
 
     });
-    debugger
+    
+    
     $.ajax({
         type: 'POST',
         url: 'EditPL',
         data: { id: main_id, new_list_ids:answer },
         success: function (data) {
-            if (data.error != null) {
-                loadoff()
-                const str = data.error;
-                showbox(str);
+            if (data == true) {
+                
+                var targetElementTitle = document.querySelector(".content");
+                
+                //targetElement.load(`/Web/PlayLists/Edit/EditUpdate/?Id=${main_id} .content`);
+                $.ajax({
+                    url: `/Web/PlayLists/Edit/EditUpdate/?Id=${main_id}`,
+                    dataType: 'html',
+                    success: function (data) {
+                        debugger
+                        $('#lable-page').html(data);
+                        
+
+                        //targetElement.remove();
+                        debugger
+                        
+                        
+                    }
+                })
             }
             else {
-                loadoff()
-                const tbody = document.getElementById(valuE);
-
-                tbody.parentNode.removeChild(tbody);
-                const str = data.data
-                showbox(str);
+                
             }
         },
         error: function () {
@@ -124,7 +135,9 @@ document.querySelector('#elastic').oninput = function () { //функция для импута 
 
 
 
-
+function pageLoad(sender, args) {
+    $('#body').trigger('create');
+}
 
 function btn_update() { //Добавление функции для всех кнопок бартеров
     barter_btn.forEach((el) => {

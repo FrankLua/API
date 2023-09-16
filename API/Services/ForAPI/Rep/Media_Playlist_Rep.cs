@@ -61,6 +61,9 @@ namespace API.Services.ForAPI.Rep
 
                 await _media_playlist.InsertOneAsync(playlist);
 
+                _cache.Remove(id);
+                _cache.Set(playlist._id.ToString(), playlist, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+
                 //await _media_playlisst.UpdateOneAsync(Builders<BsonDocument>.Filter.Eq("_id", $"{id}"), Builders<BsonDocument>.Update.Set("media_files_id", files));
                 return true;
             }
@@ -145,6 +148,7 @@ namespace API.Services.ForAPI.Rep
                     if(playlist == null)
                     {
                         var brigde_for_id_playlist = await _media_playlist.FindAsync(playlist => playlist._id.ToString() == id_playlist);
+                        playlist = await brigde_for_id_playlist.FirstAsync();
                         _cache.Set(id_playlist, playlist, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
                         list.Add(playlist);
                     }

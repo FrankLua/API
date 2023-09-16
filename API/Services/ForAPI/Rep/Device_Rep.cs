@@ -35,8 +35,8 @@ namespace API.Services.ForAPI.Rep
                 _cache.TryGetValue(id, out Device? device);
                 if(device== null)
                 {
-                    var bridgh = await _device.FindAsync(device => device._id == id);
-                    device = await bridgh.FirstAsync();                    
+                    var bridge = await _device.FindAsync(device => device._id == id);
+                    device = await bridge.FirstAsync();                    
                     answer.data = new DeviceResponce(device);
                     _cache.Set(id, device, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
                 }

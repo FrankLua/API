@@ -62,10 +62,31 @@ namespace API.Controllers.Web
 		[Route("Web/PlayLists/Edit/EditPL")]
 		[HttpPost]
 		[Authorize]
-		public async Task<IActionResult> EditPL(string[] new_list_ids , string id)
+		public async Task<bool> EditPL( string[] new_list_ids , string id)
 		{
 			bool answer = await _media_playlist.Edit(id, new_list_ids);
-			return View();
+
+			return (answer);
 		}
-	}
+        [Route("Web/PlayLists/Edit/EditUpdate")]
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> EditUpdate([FromQuery(Name = "Id")] string id)
+		{
+            var playlist = await _media_playlist.GetMediaPlaylist(id);
+
+            List<Media_file> playlist_file = await _media_file.GetFiles(playlist.data.media_files_id);
+            List<Media_file> files = await _media_file.GetFiles(await _user.GetUserFilesId(User.Identity.Name));
+
+            files = files.Except(playlist_file).ToList();
+
+
+
+            ViewBag.Disable_File = files;
+            ViewBag.Enabled_File = playlist_file;
+
+
+            return PartialView(playlist.data);
+        }
+    }
 }
