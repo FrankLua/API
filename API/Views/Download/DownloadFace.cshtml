@@ -11,57 +11,66 @@
 	<script src="~/js/DW/File-Modal-window.js" defer></script>
 	<script src="~/js/DW/ShowBox.js" defer></script>
 	<script src="~/js/DW/DWsendDelete.js" defer></script>
+	<script src="~/js/DW/Tables.js" defer ></script>
 
 </head>
 <div class="lable-page">
 
 	<p> My Files</p>
+	<input placeholder="Поиск по имени" type="text" class="common-elastic" id="common-elastic">
 
 </div>
 
 <div class="main-content">
-	@if (ViewBag.Answer != null)
-	{
-		<div id="message" title="@ViewBag.Answer"></div>
-		
-	}
-	else
-	{
-			<div id="message"></div>
-	}
-
-	@if(Model == null)
-	{
-		<h2>@ViewBag.Exaption</h2>
-	}	
-	else
-	{
+	
+	
 		
 		
-			<table class="main-table" id="table">
+	    <table class="main-table" id="table-file">
 
 				<thead>
 					<tr>
-						<th>Имя файла</th>
-						<th>Тип</th>
-						<th>Действия</th>
+				<th data-type="string" title="true">Имя файла</th>
+				<th data-type="string" title="true">Формат</th>
+				<th data-type="string" title="true">Тип</th>
+				<th data-type="string" title="true">Действия</th>
 					</tr>
 
 				</thead>
-				@foreach (var item in Model)
-				{
-					<tbody>
+		@if(ViewBag.Med != null)
+		{
+			@foreach (var item in ViewBag.Med)
+			{
+				<tbody>
 					<tr id="@item._id">
-						<td>@item.name</td>
+						<td id="item">@item.name</td>
+						<td>Медиа файл</td>
 						<td>@item.mime_type</td>
-						<td><button id ="button" value = "@item._id" >Удалить</button></td>
+						<td><button id="button" value="@item._id">Удалить</button></td>
 					</tr>
 				</tbody>
-			
-				}
+
+			}
+		}
+		@if (ViewBag.Ad != null)
+		{
+			@foreach (var item in ViewBag.Ad)
+			{
+				<tbody>
+					<tr id="@item._id">
+						<td id="item">@item.name</td>
+						<td>Рекламный файл</td>
+						<td>@item.mime_type</td>
+						<td><button id="button" value="@item._id">Удалить</button></td>
+					</tr>
+				</tbody>
+
+			}
+		}
+		
 		</table>
 		
-	}
+	
 
 
 	
@@ -79,6 +88,19 @@
 							.mp4 (video), audio/mp4.
 						</p>
 						<input type="file" name="file">
+						<br>
+						<br />
+						<br />
+						<br>
+						<h3>Выберете тип файла</h3>
+						<select id="option" name="ad">
+							<option value= "false">
+								Обычный
+							</option>
+							<option value = "true"> 
+								Рекламный
+							</option>							
+						</select>
 						<br>
 						<br>
 						<button id="load" type="submit"> Send </button>

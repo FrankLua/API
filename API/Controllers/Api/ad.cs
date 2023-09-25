@@ -39,7 +39,7 @@ namespace API.Controllers.Api
         public async Task<IActionResult> get_files([FromQuery(Name = "id")] string fileid)
         {
            
-            var file = await _Ad_files.getAdfile(fileid);
+            var file = await _Ad_files.Getfile(fileid);
 
             var document = await _aws3Services.DownloadAdFileAsync(file);
             
@@ -54,10 +54,10 @@ namespace API.Controllers.Api
         [EnableRateLimiting("ForOther")]
         [HttpGet]
         [Route("get_playlist")]
-        public async Task<BaseResponse<Media_Ad_playlist>> get_playlist([FromQuery(Name = "Id")] string deviceid)
+        public async Task<BaseResponse<Media_Ad_playlist_for_API>> get_playlist([FromQuery(Name = "Id")] string deviceid)
         {
             
-            BaseResponse<Media_Ad_playlist> answer = new BaseResponse<Media_Ad_playlist>();
+            BaseResponse<Media_Ad_playlist_for_API> answer = new BaseResponse<Media_Ad_playlist_for_API>();
             var device = await _device.GetDevice(deviceid);
             if (device.data == null)
             {
@@ -74,8 +74,10 @@ namespace API.Controllers.Api
             else
             {
                 string playlist = device.data.ad_playlist;
-                
-                return await _playlist.GetPlaylistAsyncbyId(playlist);
+                var adPlaylist = await _playlist.GetPlaylistAsyncbyId(playlist);
+
+				answer.data = new Media_Ad_playlist_for_API(adPlaylist.data);
+                return answer;
             }
 
         }

@@ -4,38 +4,32 @@ using Newtonsoft.Json;
 
 namespace API.DAL.Entity.Models
 {
-    public class Media_playlist
-    {
-        [BsonId]
-        
-		public ObjectId _id { get; set; }
+	public class Playlist
+	{
+		[BsonId]
+		virtual public ObjectId _id { get; set; }
 
 		[BsonElement("name")]
 		public string name { get; set; }
 		[BsonElement("is_public")]
 		public bool is_public { get; set; }
-        [BsonElement("media_files_id")]
-
-        public List<string> media_files_id {get; set;}
-
-        public Media_playlist()
-        {
-            media_files_id = new List<string>();
-        }
-
-    }
-	public class Media_playlist_for_api
-	{
-		
-		public string _id { get; set; }
-
-		
-		public string name { get; set; }
-		
-		public bool is_public { get; set; }
-		
+		[BsonElement("media_files_id")]
 
 		public List<string> media_files_id { get; set; }
+
+		public Playlist()
+		{
+			media_files_id = new List<string>();
+		}
+
+	}
+	public class Media_playlist: Playlist
+    {        
+		
+    }
+	public class Media_playlist_for_api : Playlist
+	{		
+		public string _id { get; set; }
 
 		public Media_playlist_for_api(Media_playlist playlist)
 		{

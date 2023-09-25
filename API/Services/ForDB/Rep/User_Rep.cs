@@ -208,5 +208,39 @@ namespace API.Services.ForAPI.Rep
             }
 
         }
-    }
+
+		public async Task<List<string>> GetUserAdFilesId(string login)
+		{
+			List<string> list = new List<string>();
+			try
+			{
+				_cache.TryGetValue(login, out User? user);
+				if (user == null)
+				{
+					var bridge_for_user = await _user.FindAsync(user => user.login == login);
+					user = await bridge_for_user.FirstAsync();
+					_cache.Set(login, user, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+					list = user.ad_files.ToList();
+					return list;
+				}
+				else
+				{
+					list = user.ad_files.ToList();
+					return list;
+				}
+
+			}
+			catch (InvalidOperationException ex)
+			{
+				string[] par = new string[] { "User" };
+				Loger.ExaptionForNotFound(ex, method: "GetUserAdFilesId", login, par);
+				return null;
+			}
+			catch (Exception ex)
+			{
+				Loger.Exaption(ex, "GetUserAdFilesId");
+				return null;
+			}
+		}
+	}
 }

@@ -18,8 +18,8 @@ namespace API.Services.ForS3.Rep
         {
             AmazonS3Config config = new AmazonS3Config();
             config.ServiceURL = "https://s3.timeweb.com";
-            _bucketName = bucketName;
-            _awsS3Client = new AmazonS3Client(awsAccessKeyId, awsSecretAccessKey, config);
+            _bucketName = bucketName; 
+			_awsS3Client = new AmazonS3Client(awsAccessKeyId, awsSecretAccessKey, config);
         }
 
         public async Task<bool> CheackFileAsync(string folder, string file)

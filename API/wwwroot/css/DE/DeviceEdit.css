@@ -1,0 +1,141 @@
+.content-title{
+    text-align: center; 
+    margin: 2%;   
+}
+.time-title{
+    text-align: center;
+    margin: 2%; 
+}
+.time-day{
+    text-align: center;
+    margin: 2% 5% 2%;
+}
+.time-time{
+    display: flex;
+    justify-content: space-between;
+    margin: 0% 10% 0%;
+}
+.device-date{
+    margin: 2%;
+    padding: 2%;
+    border: solid black 1px;
+    border-radius: 25px;
+}
+.device-date-params{
+    padding: 0% 10% 0%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 25px;    
+    
+    
+    margin: 2%;
+    >div{
+        height: 75px;
+        width: 450px;
+        border-radius: 25px;
+        border: solid burlywood 2px;
+        line-height: 50px;
+        text-align: center;
+    }
+}
+.date-btn{
+    
+    border: solid burlywood 2px;
+    border-radius: 25px;
+}
+.content-body {
+    height: 600px;
+    margin: 1% 2% 1% 2%;
+    border-radius: 10px;
+    overflow-y: scroll;
+}
+
+    .content-body::-webkit-scrollbar {
+        width: 10px;
+        background-color: #545454;
+        border-radius: 10px;
+    }
+
+    .content-body::-webkit-scrollbar-thumb {
+        background-color: #171717;
+        border-radius: 10px;
+    }
+.added-Content {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.btn {
+    border: none;
+    cursor: pointer;
+    background-color: greenyellow;
+    border-radius: 25px;
+    width: 250px;
+    height: 55px;
+}
+.day-monitoring-table {
+    text-align: center;
+    justify-content: center;
+    margin: 2% 15% 2%;
+    width: 75%;
+    >thead
+
+{
+    >tr
+
+{
+    >th
+
+{
+    background-color: #333;
+    color: #fff;
+}
+
+}
+}
+}
+
+.day-monitoring-table {
+    >tbody
+
+{
+    >tr
+
+{
+    >td
+
+{
+    background-color: green;
+    color: #fff;
+}
+
+}
+}
+}
+
+.tables {
+    align-content: center
+}
+.day-help{
+    text-align: center;
+    margin: 0% 10% 0%;
+}
+
+.controls{
+    display:flex;
+    justify-content: space-between;
+    margin: 0 5% ;
+    position:relative;
+    
+}
+.control-input {
+    top:50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    border-radius: 25px;
+    width: 175px;
+    height: 30px;
+    border: solid burlywood 2px;
+}

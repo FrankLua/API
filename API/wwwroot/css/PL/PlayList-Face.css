@@ -31,16 +31,7 @@
    
 }
 
-.modal-window {
-    background-color: white;
-    width: 30%;
-    height: 30%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    display: none;
-    
-}
+
 
 .window-title {
     text-align: center;
@@ -211,11 +202,6 @@ td {
     visibility: hidden;
     transition: all 0.3s ease-in-out;
 }
-.window-title {
-    justify-content: space-between;
-    display: flex;
-    text-align: center;
-}
 
 .lable-page {
     >p
@@ -226,15 +212,42 @@ td {
 }
 
 }
-.modal-window-playlist {
-    background-color: white;
-    width: 70%;
-    height: 70%;
+
+.window-title {    
+    text-align: center;
+    border-radius: 25px;
+    width: 500px;
+    height: 350px;
+    background-color: #333;
+    color: white;
+    >h2{
+           margin: 30px 0 30px 0 ;
+       }
+> button {
+    border: none;
+    cursor: pointer;
+    background-color: greenyellow;
+    border-radius: 25px;
+    width: 250px;
+    height: 55px;
+}
+}
+
+.div-type {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    display: none;
-    justify-items: center;
+    margin: 0 10% 15%;
+    justify-content: space-between;
+}
+
+.div-name {    
+    >input
+
+{
+    width: 250px;
+    height: 30px;
+    border: none;
+    border-radius: 25px;
+}
 }
 
 

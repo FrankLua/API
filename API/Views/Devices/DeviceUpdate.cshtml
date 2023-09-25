@@ -1,0 +1,147 @@
+﻿@model API.DAL.Entity.ResponceModels.DeviceResponce
+<div class="device-date">
+	<div class="device-date-params">
+		<div class="param-elem-head">Id:</div>
+		<div id="id" class="param-elem-body">@Model.id</div>
+	</div>
+	<div class="device-date-params">
+		<div class="param-elem-head">Название</div>
+		<div class="param-elem-body">
+			<div id="name" class="data">
+				@Model.name
+			</div>
+			<div class="controls">
+				<input class="control-input" style="visibility:hidden" type='text'>
+				<button class="date-btn" style="pointer-events: none;visibility:hidden" id="cancel">Отменить</button>
+				<button class="date-btn" id="edit">Изменить</button>
+				<button class="date-btn" style="pointer-events: none; visibility:hidden" id="apply">Применить</button>
+			</div>
+		</div>
+
+	</div>
+	<div class="device-date-params">
+		<div class="param-elem-head">Адресс</div>
+		<div  class="param-elem-body">
+			<div id="address" class="data">
+				@Model.address
+			</div>
+			<div class="controls">
+				<input class="control-input" style="visibility:hidden" type='text'>
+				<button class="date-btn" style="pointer-events: none;visibility:hidden" id="cancel">Отменить</button>
+				<button class="date-btn" id="edit">Изменить</button>
+				<button class="date-btn" style="pointer-events: none;visibility:hidden" id="apply">Применить</button>
+			</div>
+		</div>
+
+	</div>
+	<div class="device-date-params">
+		<div class="param-elem-head">Выбранный плейлист</div>
+		<div class="param-elem-body">
+			<select id="m-PlayList">
+				@foreach (var playlist in ViewBag.Plalists)
+				{
+					<option value="@playlist._id">@playlist.name</option>
+				}
+			</select>
+		</div>
+	</div>
+	<div class="device-date-params">
+		<div class="param-elem-head">Выбранный плейлист рекламы</div>
+		<div class="param-elem-body">
+			<select id="a-PlayList">
+				<option value="1">Букмекерская контора один икс бет</option>
+				<option value="2">Реклама вечного курса на экзогенном тестостероне</option>
+				<option value="3">Фильм Браби С РаЙОномГосЛИНГом</option>
+			</select>
+		</div>
+	</div>
+</div>
+<div class="time">
+	<div class="time-title">
+		<h2>Настройка работы девайса</h2>
+	</div>
+	<div>
+		<table class="day-monitoring-table">
+			<thead>
+				<tr>
+					<th>День недели</th>
+					<th>Режим работы от и до</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var day in Model.intervals)
+				{
+					<tr id="list-Day">
+						<td>@day.day</td>
+						<td>@day.from.ToShortTimeString() - @day.to.ToShortTimeString()</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<div class="day-help">
+			<h2 style="color:brown">* Отмеченны измененые параметры</h2>
+			<h2 style="color:green">* Отмеченны не измененые параметры</h2>
+		</div>
+	</div>
+	<div class="time-day">
+		<h3>День недели</h3>
+		<select name="pets" id="selected-day">
+			<option value="none">Выберите день</option>
+			@foreach (var day in Model.intervals)
+			{
+				<option value="@day.from/@day.to/@day.day">@day.day</option>
+			}
+		</select>
+	</div>
+	<div class="time-time">
+		<div class="time-after">
+			<h3>после</h3>
+			<select style="visibility:hidden" id="from">
+				<option value="none">Выберите час</option>
+				<option value="00.00.0000 7:00:00">7:00</option>
+				<option value="00.00.0000 8:00:00">8:00</option>
+				<option value="00.00.0000 9:00:00">9:00</option>
+				<option value="00.00.0000 10:00:00">10:00</option>
+				<option value="00.00.0000 11:00:00">11:00</option>
+				<option value="00.00.0000 12:00:00">12:00</option>
+				<option value="00.00.0000 13:00:00">13:00</option>
+				<option value="00.00.0000 14:00:00">14:00</option>
+				<option value="00.00.0000 15:00:00">15:00</option>
+				<option value="00.00.0000 16:00:00">16:00</option>
+				<option value="00.00.0000 17:00:00">17:00</option>
+				<option value="00.00.0000 18:00:00">18:00</option>
+				<option value="00.00.0000 19:00:00">19:00</option>
+				<option value="00.00.0000 20:00:00">20:00</option>
+				<option value="00.00.0000 21:00:00">21:00</option>
+				<option value="00.00.0000 22:00:00">22:00</option>
+				<option value="00.00.0000 23:00:00">23:00</option>
+			</select>
+		</div>
+		<div class="time-before">
+			<h3> до </h3>
+			<select style="visibility:hidden" id="to">
+				<option value="none">Выберите час</option>
+				<option value="00.00.0000 7:00:00">7:00</option>
+				<option value="00.00.0000 8:00:00">8:00</option>
+				<option value="00.00.0000 9:00:00">9:00</option>
+				<option value="00.00.0000 10:00:00">10:00</option>
+				<option value="00.00.0000 11:00:00">11:00</option>
+				<option value="00.00.0000 12:00:00">12:00</option>
+				<option value="00.00.0000 13:00:00">13:00</option>
+				<option value="00.00.0000 14:00:00">14:00</option>
+				<option value="00.00.0000 15:00:00">15:00</option>
+				<option value="00.00.0000 16:00:00">16:00</option>
+				<option value="00.00.0000 17:00:00">17:00</option>
+				<option value="00.00.0000 18:00:00">18:00</option>
+				<option value="00.00.0000 19:00:00">19:00</option>
+				<option value="00.00.0000 20:00:00">20:00</option>
+				<option value="00.00.0000 21:00:00">21:00</option>
+				<option value="00.00.0000 22:00:00">22:00</option>
+				<option value="00.00.0000 23:00:00">23:00</option>
+			</select>
+		</div>
+	</div>
+</div>
+			</div>
+
+

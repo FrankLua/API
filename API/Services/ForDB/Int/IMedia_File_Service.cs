@@ -11,7 +11,7 @@ namespace API.Services.ForAPI.Int
         Task<List<Media_file>> GetFiles(List<string> ids);
 
 
-        Task<string> AddFile(IFormFile file, string login);
+        Task<Media_file> AddFile(IFormFile file, string login);
 
         Task<string> DeleteFile(string id, string login);
     }

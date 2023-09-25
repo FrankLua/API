@@ -1,25 +1,5 @@
-﻿@{
-	ViewBag.Title = "Edit";
-	Layout = "/Views/Shared/_Layout.cshtml";
-}
-@model API.DAL.Entity.Models.Media_playlist
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-
-<head>
-    <link href="~/css/PL/Edit.css" rel="stylesheet" asp-append-version="true" />
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="~/js/PL/Tables-Face.js" defer></script>
-</head>
-
-
-<div class="menu-board">
-    <input placeholder="Поиск по имени" type="text" id="elastic">
-    <h2 id ="main"title="@Model._id">@Model.name</h2>
-    <button class="save" id="save">Save</button>
-    
-</div>
-<div class="lable-page">
-    <table class="main-table-playlist" id="table" title="Med">
+﻿<div class="lable-page">
+    <table class="main-table-playlist" id="table" title="Ad">
         <thead>
             <tr>
                 <th data-type="string" title="true">
@@ -37,11 +17,11 @@
             </tr>
         </thead>
         <tbody id="source-list">
-            @if(ViewBag.Enabled_File != null)
+            @if (ViewBag.Enabled_File != null)
             {
                 @foreach (var item in ViewBag.Enabled_File)
                 {
-                    <tr title="@item._id">
+                    <tr title="@item._id/Ad">
                         <td>
                             <button id="btn-barter" value="true">-</button>
                         </td>
@@ -52,17 +32,17 @@
                             <p>@item.mime_type</p>
                         </td>
                         <td>
-                            <p>@item.is_public</p>
+                            <p>Приватный</p>
                         </td>
                     </tr>
                 }
             }
-            
+
             @if (ViewBag.Disable_File != null)
             {
                 @foreach (var item in ViewBag.Disable_File)
                 {
-                    <tr title="@item._id">
+                    <tr title="@item._id/Ad">
                         <td>
                             <button id="btn-barter" value="false">+</button>
                         </td>
@@ -73,15 +53,12 @@
                             <p>@item.mime_type</p>
                         </td>
                         <td>
-                            <p>@item.is_public</p>
+                            <p>Приватный</p>
                         </td>
                     </tr>
                 }
             }
-            
+
         </tbody>
     </table>
-</div>
-<div class="added-Content">    
-	<button class="btn" id="load"> Send </button>
 </div>

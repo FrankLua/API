@@ -1,0 +1,38 @@
+﻿<table class="main-table" id="table">
+
+	<thead>
+		<tr>
+			<th>Имя плейлиста</th>
+			<th>Публичность</th>
+			<th>Тип</th>
+			<th>Редактор</th>
+			<th>Удалить</th>
+		</tr>
+
+	</thead>
+	@foreach (var item in ViewBag.Ad)
+	{
+		<tbody>
+			<tr id="@item._id">
+				<td id="item">@item.name</td>
+				<td>Приватный</td>
+
+				<td>Рекламный</td>
+				<td><a href="/Web/PlayLists/EditAd/?Id=@item._id">Редактировать</a></td>
+				<td><button id="button-delete" value="@item._id/Ad">Удалить</button></td>
+			</tr>
+		</tbody>
+	}
+	@foreach (var item in ViewBag.Media)
+	{
+		<tbody>
+			<tr id="@item._id">
+				<td id="item">@item.name</td>
+				<td>Приватный</td>
+				<td>Медиа</td>
+				<td><a href="/Web/PlayLists/Edit/?Id=@item._id">Редактировать</a></td>
+				<td><button id="button-delete" value="@item._id/Med">Удалить</button></td>
+			</tr>
+		</tbody>
+	}
+</table>

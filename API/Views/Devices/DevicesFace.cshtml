@@ -1,0 +1,42 @@
+﻿@{
+	ViewBag.Title = "DevicesFace";
+	Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<div class="lable-page">
+
+	<p>Device</p>
+	<input placeholder="Поиск по имени" type="text" class="common-elastic" id="common-elastic">
+</div>
+<head>
+	<link href="~/css/Main.css" rel="stylesheet" asp-append-version="true" />
+</head>
+
+<div class="main-content">
+
+	<table class="main-table">
+
+		<thead>
+			<tr>				
+				<th>Имя девайса</th>
+				<th>Местоположение</th>
+				<th>Изменить</th>				
+			</tr>
+		</thead>		
+		<tbody>
+			@if (Model != null)
+			{
+				foreach(var device in Model)
+				{
+					<tr>
+				        <td id="item">@device.name</td>
+				        <td>@device.address</td>				        
+				        <td>
+							<a href="/Web/Devices/DevicesEdit/?Id=@device.id">Изменить</a>
+					    </td>
+			       </tr>				
+				}			
+			}			
+		</tbody>
+	</table>
+</div>

@@ -22,9 +22,11 @@ btn_update()
 
 
 btn_save.onclick = function () { //Функция для кнопки сохранить
-    
+    debugger
     let rowsArray = Array.from(table.rows).slice(1);
-
+    const type = table.title;
+    let url1;
+    let url2;
     let answer = [];
     rowsArray.forEach((row) => {
         let state_btn = row.cells[0]
@@ -32,15 +34,24 @@ btn_save.onclick = function () { //Функция для кнопки сохранить
             .value
         
         if (state_btn == "true") {            
-            answer.push(row.title);
+            answer.push(row.title.split('/')[0]);
+            
         }
 
     });
-    
+    debugger
+    if (type == "Ad") {
+        url1 = "/Web/PlayLists/Edit/EditAdPL";
+        url2 = `/Web/PlayLists/Edit/EditUpdateAd?Id=${main_id}`
+    }
+    else {
+        url1 = 'EditPL';
+        url2 = `/Web/PlayLists/Edit/EditUpdate/?Id=${main_id}`;
+    }
     
     $.ajax({
         type: 'POST',
-        url: 'EditPL',
+        url: url1,
         data: { id: main_id, new_list_ids:answer },
         success: function (data) {
             if (data == true) {
@@ -49,7 +60,7 @@ btn_save.onclick = function () { //Функция для кнопки сохранить
                 
                 //targetElement.load(`/Web/PlayLists/Edit/EditUpdate/?Id=${main_id} .content`);
                 $.ajax({
-                    url: `/Web/PlayLists/Edit/EditUpdate/?Id=${main_id}`,
+                    url: url2,
                     dataType: 'html',
                     success: function (data) {
                         debugger

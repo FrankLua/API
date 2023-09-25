@@ -16,7 +16,7 @@ namespace API.Services.ForAPI.Rep
     {
         private readonly IMongoCollection<Media_playlist> _media_playlist;
         private readonly IMongoCollection<User> _user;
-        private readonly IMongoCollection<BsonDocument> _media_playlisst;
+        
         IMemoryCache _cache;
 
         public Media_Playlist_Rep(IAPIDatabaseSettings settings, IMongoClient mongoClient, IMemoryCache memoryCache)
@@ -24,7 +24,7 @@ namespace API.Services.ForAPI.Rep
             var database = mongoClient.GetDatabase(settings.DatabaseName);
             _media_playlist = database.GetCollection<Media_playlist>("Media Playlists");
             _user = database.GetCollection<User>("Users");
-            _media_playlisst = database.GetCollection<BsonDocument>("Media Playlists");
+            
             _cache = memoryCache;
         }
 
@@ -37,7 +37,9 @@ namespace API.Services.ForAPI.Rep
 
                 await _media_playlist.InsertOneAsync(newplaylist);
                 await _user.UpdateOneAsync(Builders<User>.Filter.Eq("login", $"{login}"), Builders<User>.Update.Push("media-playlist", newplaylist._id.ToString()));
-                return "OK";
+				_cache.Set(newplaylist._id.ToString(), newplaylist, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+				_cache.Remove(login);
+				return "OK";
 
             }
 
@@ -47,7 +49,34 @@ namespace API.Services.ForAPI.Rep
             }
         }
 
-        public async Task<bool> Edit(string id, string[] new_file)
+		public async Task<BaseResponse<bool>> DeletePlaylist(string login, string idPlaylist)
+		{
+			var responce = new BaseResponse<bool>();
+			try
+			{
+				await _media_playlist.DeleteOneAsync(playlist => playlist._id.ToString() == idPlaylist);
+				await _user.UpdateOneAsync(Builders<User>.Filter.Eq("login", $"{login}"), Builders<User>.Update.Pull("media-playlist", idPlaylist));
+				_cache.Remove(idPlaylist);
+				_cache.Remove(login);
+				responce.data = true;
+				return responce;
+			}
+			catch (InvalidOperationException ex)
+			{
+				string[] par = new string[] { "Ad_playlist" };
+				Loger.ExaptionForNotFound(ex, method: "DeletePlaylist/Ad", login, par);
+				responce.data = false;
+				return responce;
+			}
+			catch (Exception ex)
+			{
+				Loger.Exaption(ex, "DeletePlaylist/Ad");
+				responce.data = false;
+				return responce;
+			}
+		}
+
+		public async Task<bool> Edit(string id, string[] new_file)
         {
             try
             {
@@ -67,8 +96,17 @@ namespace API.Services.ForAPI.Rep
                 //await _media_playlisst.UpdateOneAsync(Builders<BsonDocument>.Filter.Eq("_id", $"{id}"), Builders<BsonDocument>.Update.Set("media_files_id", files));
                 return true;
             }
-            catch
+            catch (InvalidOperationException ex)
             {
+                string[] par = new string[] { "Med_playlist" };
+                Loger.ExaptionForNotFound(ex, method: "EditPlaylist/Med", id, par);
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Loger.Exaption(ex, "EditPlaylist/Med");
+
                 return false;
             }
         }

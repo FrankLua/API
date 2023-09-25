@@ -30,7 +30,7 @@ namespace API.Services.ForAPI.Rep
             _cache = memoryCache;
         }
 
-        public async Task<string> AddFile(IFormFile file, string login)
+        public async Task<Media_file> AddFile(IFormFile file, string login)
         {
             Media_file newfile = new Media_file();
             newfile.name = file.FileName;
@@ -49,12 +49,12 @@ namespace API.Services.ForAPI.Rep
 
 
 
-                return $"Ok";
+                return newfile;
             }
             catch (Exception ex)
             {
                 Loger.Exaption(ex,"Add-File");
-                return $"{ex.Message}";
+                return null;
             }
 
 

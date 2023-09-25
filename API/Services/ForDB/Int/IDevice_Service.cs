@@ -9,5 +9,7 @@ namespace API.Services.ForAPI.Int
 		Task<BaseResponse<DeviceResponce>> GetDevice(string id);
 
         BaseResponse<DeviceResponce> GetDeviceSync(string id);
+
+        Task<BaseResponse<bool>> EditDevice(Device device);
     }
 }

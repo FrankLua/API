@@ -23,7 +23,10 @@ namespace API.DAL.Entity.Models
 		public string[] media_files { get; set; }
 		[BsonElement("media-playlist")]
 		public string[] media_playlists { get; set; }
-
+		[BsonElement("ad-files")]
+		public string[] ad_files { get; set; }
+		[BsonElement("ad-playlist")]
+		public string[] ad_playlists { get; set; }
 
 	}
 }

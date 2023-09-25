@@ -28,7 +28,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\css\" />
+    <Folder Include="wwwroot\css\DE\" />
+    <Folder Include="wwwroot\js\DE\" />
+    <Folder Include="wwwroot\js\LO\" />
   </ItemGroup>
 
   <ItemGroup>

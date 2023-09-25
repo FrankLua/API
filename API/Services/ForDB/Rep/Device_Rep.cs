@@ -25,8 +25,32 @@ namespace API.Services.ForAPI.Rep
             _cache = memoryCache;
         }
 
+		public async Task<BaseResponse<bool>> EditDevice(Device device)
+		{
+			BaseResponse<bool> answer = new BaseResponse<bool>();            
+            
+                
+            
+            try
+            {
+				var filter = Builders<Device>.Filter.Eq(s => s._id, device._id);
+                var result = await _device.ReplaceOneAsync(filter, device);
+				_cache.Remove(device._id.ToString());
+                _cache.Set(device._id.ToString(), device);
+                answer.data = true;
+				return answer;
+			}
+            catch(Exception ex)
+            {
+				string[] par = new string[] { "Device" };
+				Loger.ExaptionForNotFound(ex, method: "GetDevice", device._id, par);
+				answer.error = "Crush";
+				answer.data = false;
+				return answer;
+			}
+		}
 
-        public async Task<BaseResponse<DeviceResponce>> GetDevice(string id)
+		public async Task<BaseResponse<DeviceResponce>> GetDevice(string id)
         {
 
             BaseResponse<DeviceResponce> answer = new BaseResponse<DeviceResponce>();

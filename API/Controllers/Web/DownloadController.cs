@@ -8,45 +8,46 @@ using API.DAL.Entity.APIResponce;
 using API.Services.ForAPI.Int;
 using API.Services.ForS3.Int;
 using API.Services.ForS3.Rep;
+using static API.DAL.Entity.SupportClass.MimeType;
 
 namespace API.Controllers.Web
 {
     public class DownloadController : Controller
 	{
+
 		private readonly IAppConfiguration _appConfiguration;
 		private readonly IAws3Services _aws3Services;
 		private readonly IMedia_File_Service _media_file;
+		private readonly IAd_files_Service _ad_file;
 		private readonly IUser_Service _user;
 
-		public DownloadController(IDevice_Service device,IAppConfiguration appConfiguration,IMedia_File_Service media_file, IUser_Service user_Service)
+		public DownloadController(IDevice_Service device,IAppConfiguration appConfiguration,IMedia_File_Service media_file, IUser_Service user_Service, IAd_files_Service ad_file)
 		{
 			_appConfiguration = appConfiguration;
 			_aws3Services = new Aws3Services(_appConfiguration.AwsAccessKey, _appConfiguration.AwsSecretAccessKey, _appConfiguration.BucketName, _appConfiguration.URL);
 			_user = user_Service;
 			_media_file = media_file;
+			_ad_file = ad_file;
 		}
 		[Route("Web/Download/DownloadFace")]
 		[HttpGet]
 		[Authorize]
 		public async Task<IActionResult> DownloadFace()
 		{
-			List<string> list = await _user.GetUserFilesId(User.Identity.Name);
-			if (list == null)
-			{
-				ViewBag.Exaption = "Произошла ошибка!";
-				return View();
-			}
-			List<Media_file>media_list = await _media_file.GetFiles(list);
-			if (media_list == null)
-			{
-				ViewBag.Exaption = "Произошла ошибка!";
-				return View();
-			}
-			else
-			{
+			var playlistlistMed = await _user.GetUserFilesId(User.Identity.Name);
+
+			var playlistlistAd = await _user.GetUserAdFilesId(User.Identity.Name);
+
+
+			var media_list = await _media_file.GetFiles(playlistlistMed);
+			
+			var ad_list = await _ad_file.Getfiles(playlistlistAd);
 				
-				return View(media_list);
-			}
+
+			ViewBag.Med = media_list;
+			ViewBag.Ad = ad_list;
+		    return View();
+			
 			
 		}
 		[Route("Web/Download/Delete")]
@@ -79,35 +80,33 @@ namespace API.Controllers.Web
 		[Route("Web/Download/DownloadFace")]
 		[HttpPost]
 		[Authorize]
-		public async Task< IActionResult> DownloadFace(IFormFile file)
+		public async Task< IActionResult> DownloadFace(IFormFile file, bool ad)
 		{
 			if (file != null)
 			{
-				if(MimeType.CheakMimetype(file.ContentType))
+				if (file != null & CheakMimetype(file.ContentType)&& await _aws3Services.CheackFileAsync(GetFolderName(file.ContentType,ad), file.FileName))
 				{
-					if(await _aws3Services.CheackFileAsync(MimeType.GetFolderName(file.ContentType),file.FileName)){
-						await _aws3Services.UploadFileAsync(file);
-						ViewBag.Answer = _media_file.AddFile(file, User.Identity.Name);
-						return Redirect("~/Web/Download/DownloadFace");
+
+					if (ad)
+					{
+						var newfile = await _ad_file.AddFile(file, User.Identity.Name);
+						newfile.folder = GetFolderName(file.ContentType, ad);
+						await _aws3Services.DownloadAdFileAsync(newfile);
+						return RedirectPermanent("~/Web/Download/DownloadFace");
 					}
 					else
 					{
+						var newfile = await _media_file.AddFile(file, User.Identity.Name);
+						newfile.folder = GetFolderName(file.ContentType, ad);
+						await _aws3Services.DownloadFileAsync(newfile);						
 						
-						List<string> list = await _user.GetUserFilesId(User.Identity.Name);
-						List<Media_file> media_list = await _media_file.GetFiles(list);
-						ViewBag.Answer = "Файл с таким именем уже существует в хранилище";
-						return View(media_list);
+						return RedirectPermanent("~/Web/Download/DownloadFace");
 					}
 
 				}
 				else
 				{
-					List<string> list = await _user.GetUserFilesId(User.Identity.Name);
-					List<Media_file> media_list = await _media_file.GetFiles(list);
-					ViewBag.Answer = "Not correctly file type!";
-					return View(media_list);
-					
-					
+					return RedirectPermanent("~/Web/Download/DownloadFace");
 				}
 
 			}

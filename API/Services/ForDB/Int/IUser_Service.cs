@@ -13,6 +13,8 @@ namespace API.Services.ForAPI.Int
 
         public Task<List<string>> GetUserFilesId(string login);
 
-        public Task<BaseResponse<UserResponce>> GetUserInfo(string login);
+		public Task<List<string>> GetUserAdFilesId(string login);
+
+		public Task<BaseResponse<UserResponce>> GetUserInfo(string login);
     }
 }
