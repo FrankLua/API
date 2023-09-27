@@ -1,4 +1,5 @@
 ﻿using API.DAL.Entity.Models;
+using API.DAL.Entity.ResponceModels;
 using API.Services.ForAPI.Int;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,15 +24,24 @@ namespace API.Controllers.Web
             _media_playlist = playlists;
         }
 		[Route("Web/Devices/DevicesFace")]
+		[Authorize]
 		public async Task<IActionResult> DevicesFace()
         {
             var login = User.Identity.Name;
-            var responce = await _user.GetUserDevice(login);
-            var model = responce.data.devices;
+			
+            var user = await _user.GetUserInfo(login);
+            var list = user.data.devices.ToList();
+			List<DeviceResponce> model = new List<DeviceResponce>();
+			foreach (var device in list)
+			{
+				model.Add(_device.GetDevice(device).Result.data);
+			}
+			
             return View(model);
         }
         [Route("Web/Devices/DevicesEdit")]
-        public async Task<IActionResult> DevicesEdit([FromQuery(Name = "Id")] string id)
+		[Authorize]
+		public async Task<IActionResult> DevicesEdit([FromQuery(Name = "Id")] string id)
 		{
             var model = await _device.GetDevice(id);
             var m_Playlists = await _media_playlist.GetPlayListUser(User.Identity.Name); // Get all playlist by user

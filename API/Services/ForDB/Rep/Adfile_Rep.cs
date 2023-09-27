@@ -53,6 +53,24 @@ namespace API.Services.ForAPI.Rep
 			}
 		}
 
+		public async Task<bool> DeleteFile(string id, string login)
+		{
+			try
+			{
+				await _ad_file.DeleteOneAsync(a => a._id.ToString() == id);
+				await _user.UpdateOneAsync(Builders<User>.Filter.Eq("login", $"{login}"), Builders<User>.Update.Pull("ad-files", id));
+				_cache.Remove(id);
+				_cache.Remove(login);
+				return true;
+			}
+
+			catch (Exception ex)
+			{
+				Loger.Exaption(ex, "Add-File");
+				return false;
+			}
+		}
+
 		public async Task<Adfile> Getfile(string id)
 		{
 

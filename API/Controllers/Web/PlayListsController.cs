@@ -72,7 +72,7 @@ namespace API.Controllers.Web
 		[Route("Web/PlayLists/PlaylistsFace/CreatePlaylist")]
 		[HttpPost]
 		[Authorize]
-		public async Task<bool> CreatePlaylist(string name, bool is_public, bool type)
+		public async Task<bool> CreatePlaylist(string name, bool type)
 		{
 			if(type == true)
 			{

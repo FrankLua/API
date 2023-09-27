@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using API.Services.ForAPI.Int;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace API.Controllers.Web
 {
@@ -12,10 +13,12 @@ namespace API.Controllers.Web
     public class LogController : Controller
     {
         private readonly IUser_Service _user;
-        
-        public LogController(IUser_Service userService)
+		IMemoryCache _cache;
+
+		public LogController(IUser_Service userService, IMemoryCache cache)
         {
             _user = userService;
+            _cache = cache;
         }
         [Route("Login")]
         [HttpGet]
@@ -54,11 +57,17 @@ namespace API.Controllers.Web
             // установка аутентификационных куки
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
-
+        [Route("Logout")]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Account");
-        }
+            if(User.Identity.Name != null)
+            {
+				_cache.Remove(User.Identity.Name);				
+			}
+			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+			return RedirectToAction("Login", "Log");
+
+		}
     }
 }

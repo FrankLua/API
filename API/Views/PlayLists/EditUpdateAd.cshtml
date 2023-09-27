@@ -17,44 +17,51 @@
             </tr>
         </thead>
         <tbody id="source-list">
-            @if (ViewBag.Enabled_File != null)
+            @if (ViewBag.Enabled_File != null && ViewBag.Disable_File != null)
             {
-                @foreach (var item in ViewBag.Enabled_File)
+                if (ViewBag.Enabled_File.Count > 0 || ViewBag.Disable_File.Count > 0)
                 {
-                    <tr title="@item._id/Ad">
-                        <td>
-                            <button id="btn-barter" value="true">-</button>
-                        </td>
-                        <td>
-                            <p id="item">@item.name</p>
-                        </td>
-                        <td>
-                            <p>@item.mime_type</p>
-                        </td>
-                        <td>
-                            <p>Приватный</p>
-                        </td>
-                    </tr>
-                }
-            }
+                    @foreach (var item in ViewBag.Enabled_File)
+                    {
+                        <tr class="enable_row" title="@item._id/Ad">
+                            <td>
+                                <div class="btn-barter-disable" id="btn-barter" title="true"></div>
+                            </td>
+                            <td>
+                                <p id="item">@item.name</p>
+                            </td>
+                            <td>
+                                <p>@item.mime_type</p>
+                            </td>
+                            <td>
+                                <p>Приватный</p>
+                            </td>
+                        </tr>
+                    }
 
-            @if (ViewBag.Disable_File != null)
-            {
-                @foreach (var item in ViewBag.Disable_File)
+
+                    @foreach (var item in ViewBag.Disable_File)
+                    {
+                        <tr class="disable_row" title="@item._id/Ad">
+                            <td>
+                                <div class="btn-barter-enable" id="btn-barter" title="false"></div>
+                            </td>
+                            <td>
+                                <p id="item">@item.name</p>
+                            </td>
+                            <td>
+                                <p>@item.mime_type</p>
+                            </td>
+                            <td>
+                                <p>Приватный</p>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
                 {
-                    <tr title="@item._id/Ad">
-                        <td>
-                            <button id="btn-barter" value="false">+</button>
-                        </td>
-                        <td>
-                            <p id="item">@item.name</p>
-                        </td>
-                        <td>
-                            <p>@item.mime_type</p>
-                        </td>
-                        <td>
-                            <p>Приватный</p>
-                        </td>
+                    <tr class="disable_row" title="none">
+                        <td colspan="4"><p>Здесь ничего нет</p></td>
                     </tr>
                 }
             }

@@ -9,7 +9,7 @@ namespace API.Services.ForS3.Int
 
         Task<GetObjectResponse> DownloadAdFileAsync(Adfile file);
 
-        Task<bool> UploadFileAsync(IFormFile file);
+        Task<bool> UploadFileAsync(IFormFile file, bool ad);
 
         Task<bool> CheackFileAsync(string folder, string file);
 

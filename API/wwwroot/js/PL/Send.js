@@ -57,9 +57,8 @@ function btn_Delete_Update() {
 
 
 btn_Save.onclick = function () {
-    
-    const name = document.querySelector('#playlist-name').value;
-    const isPublic = document.querySelector('#is-public').value;
+    debugger
+    const name = document.querySelector('#playlist-name').value;    
     const type = document.querySelector('#playlist-type').value; 
 
     let mock1 = true;    
@@ -68,7 +67,7 @@ btn_Save.onclick = function () {
     $.ajax({        
         url: '/Web/PlayLists/PlaylistsFace/CreatePlaylist',
         type: "POST",
-        data: { name: name, is_public: isPublic, type: type },
+        data: { name: name, type: type },
 
 
         success: function (data) {

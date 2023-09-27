@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="~/css/Layout.css" asp-append-version="true">
-    <script src ="~/js/LO/Common.js" defer></script>
- 
+    <script src ="~/js/LO/Common.js" defer></script> 
     <title>@ViewBag.Title</title>
 </head>
 <body>
@@ -16,13 +15,12 @@
     <div class="container">
 
         <div class = "sidebar">
-            <div class="person-cab">
-                <p>Ваш логин: </p>
-                <p class="login-p">asdasd</p>
+            <div class="person-cab">                
             </div>
             <a class="menu-button" href="/Web/Devices/DevicesFace">>My Device</a>
             <a class="menu-button" href="/Web/PlayLists/PlaylistsFace">>My Playlist</a>
             <a class="menu-button" href="/Web/Download/DownloadFace">>Download Files</a>
+            <a class="menu-button" href="/Web/Log/Logout">>Exit account</a>
         </div>
         <div class = "content" id="content">
             @RenderBody()

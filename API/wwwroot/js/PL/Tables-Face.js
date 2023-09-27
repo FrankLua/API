@@ -30,8 +30,8 @@ btn_save.onclick = function () { //Функция для кнопки сохранить
     let answer = [];
     rowsArray.forEach((row) => {
         let state_btn = row.cells[0]
-            .getElementsByTagName("button")[0]
-            .value
+            .getElementsByTagName("div")[0]
+            .title
         
         if (state_btn == "true") {            
             answer.push(row.title.split('/')[0]);
@@ -64,7 +64,10 @@ btn_save.onclick = function () { //Функция для кнопки сохранить
                     dataType: 'html',
                     success: function (data) {
                         debugger
-                        $('#lable-page').html(data);
+                        var kel = document.querySelector('.lable-page').innerHTML;
+                        kel.innerHTML = data;
+                        alert("Changes is saved");
+                        //$('#lable-page').innerHTML = data;
                         
 
                         //targetElement.remove();
@@ -160,15 +163,24 @@ function btn_update() { //Добавление функции для всех кнопок бартеров
 
 function barter_btn_func(el) { //Функция для кнопок "бартеров" да-нет
     debugger
-    const value = el.value
+    const value = el.title
     if (value == "true") {
+        
+        el.classList = "btn-barter-enable";
+        el.title = "false";
         debugger
-        el.textContent = "+"
-        el.value = "false"
+        var th = el.parentElement.parentElement;
+        th.classList = "";
+        th.classList = "disable_row";
     }
     else {
-        el.textContent = "-"
-        el.value = "true"
+
+        el.classList = "btn-barter-disable";
+        el.title = "true";
+        debugger
+        var th = el.parentElement.parentElement;
+        th.classList = "";
+        th.classList = "enable_row";
     }
 
 

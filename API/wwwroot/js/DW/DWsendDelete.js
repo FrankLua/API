@@ -1,13 +1,17 @@
 const table = document.getElementById('table');
 window.onload = function () {
     function strPad() {
+        debugger
         console.log(this.value)
-        const valuE = this.value
+        const valuE = this.value.split('/')[0];
+        const type = this.value.split('/')[1];
+        
+        
         load();
         $.ajax({
             type: 'POST',
             url: 'Delete',
-            data: { id: this.value },
+            data: { id: valuE, type:type },
             success: function (data) {
                 if (data.error != null) {
                     loadoff()
@@ -24,7 +28,7 @@ window.onload = function () {
                 }
             },
             error: function () {
-                alert("Произошел сбой");
+                alert("Error");
             }
         });
  

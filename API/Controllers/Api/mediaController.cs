@@ -49,7 +49,7 @@ namespace API.Controllers.Api
                     return badResponse;
                 }
 
-                var result = _aws3Services.UploadFileAsync(file);
+                //var result = _aws3Services.UploadFileAsync(file);
                 BaseResponse<FileContentResult> response = new BaseResponse<FileContentResult>();
 
                 return response;

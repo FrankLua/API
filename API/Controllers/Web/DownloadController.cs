@@ -9,6 +9,8 @@ using API.Services.ForAPI.Int;
 using API.Services.ForS3.Int;
 using API.Services.ForS3.Rep;
 using static API.DAL.Entity.SupportClass.MimeType;
+using System;
+
 
 namespace API.Controllers.Web
 {
@@ -53,18 +55,30 @@ namespace API.Controllers.Web
 		[Route("Web/Download/Delete")]
 		[HttpPost]
 		[Authorize]
-		public async Task<BaseResponse<string>> DeleteFile(string id)
+		public async Task<BaseResponse<bool>> DeleteFile(string id, string type)
 		{
-			BaseResponse<string> response = new BaseResponse<string>();
+			var response = new BaseResponse<bool>();
 
 			try
 			{
-				Media_file file = await _media_file.GetFile(id);
-				response.data = await _media_file.DeleteFile(id, User.Identity.Name);
-				bool answer = await _aws3Services.DeleteFileAsync(MimeType.GetFolderName(file.mime_type), file.name);
-				response.data = "Request successful!";
-				response.error = null;
-				return response;
+				if(type == "Med")
+				{
+					Media_file file = await _media_file.GetFile(id);
+					await _media_file.DeleteFile(id, User.Identity.Name);
+					bool answer = await _aws3Services.DeleteFileAsync(MimeType.GetFolderName(file.mime_type), file.name);
+					response.data = true;
+					response.error = null;
+					return response;
+				}
+				else
+				{
+					Adfile file = await _ad_file.Getfile(id);
+					response.data = await _ad_file.DeleteFile(id, User.Identity.Name);
+					bool answer = await _aws3Services.DeleteFileAsync(MimeType.GetFolderName(file.mime_type,true), file.name);
+					response.data = true;
+					response.error = null;
+					return response;
+				}				
 			}
 			catch
 			{
@@ -79,27 +93,29 @@ namespace API.Controllers.Web
 		}
 		[Route("Web/Download/DownloadFace")]
 		[HttpPost]
+		[DisableRequestSizeLimit]
 		[Authorize]
-		public async Task< IActionResult> DownloadFace(IFormFile file, bool ad)
+		public async Task< IActionResult> DownloadFace(IFormFile file, [FromServices] Microsoft.Extensions.Hosting.IHostingEnvironment hostingEnvironment, bool ad)
 		{
+			
+
 			if (file != null)
 			{
-				if (file != null & CheakMimetype(file.ContentType)&& await _aws3Services.CheackFileAsync(GetFolderName(file.ContentType,ad), file.FileName))
+				if (CheakMimetype(file.ContentType)&& await _aws3Services.CheackFileAsync(GetFolderName(file.ContentType,ad), file.FileName))
 				{
 
 					if (ad)
 					{
 						var newfile = await _ad_file.AddFile(file, User.Identity.Name);
 						newfile.folder = GetFolderName(file.ContentType, ad);
-						await _aws3Services.DownloadAdFileAsync(newfile);
+						await _aws3Services.UploadFileAsync(file, ad);
 						return RedirectPermanent("~/Web/Download/DownloadFace");
 					}
 					else
 					{
 						var newfile = await _media_file.AddFile(file, User.Identity.Name);
 						newfile.folder = GetFolderName(file.ContentType, ad);
-						await _aws3Services.DownloadFileAsync(newfile);						
-						
+						await _aws3Services.UploadFileAsync(file, ad);
 						return RedirectPermanent("~/Web/Download/DownloadFace");
 					}
 
@@ -119,5 +135,7 @@ namespace API.Controllers.Web
 			}
 			
 		}
+		
 	}
+
 }

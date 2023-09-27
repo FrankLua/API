@@ -7,11 +7,11 @@ namespace API.DAL.Entity.Models
         [BsonElement("day")]
         public string day { get; set; }
 
-		[BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+		[BsonDateTimeOptions(Kind = DateTimeKind.Unspecified)]
 		[BsonElement("from")]
         public DateTime from { get; set; }
 
-		[BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+		[BsonDateTimeOptions(Kind = DateTimeKind.Unspecified)]
 		[BsonElement("to")]
         public DateTime to { get; set; }
 

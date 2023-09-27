@@ -20,6 +20,8 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System.IO.Compression;
 using Microsoft.CodeAnalysis;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace API
 {
@@ -43,6 +45,16 @@ namespace API
 
             service.Configure<APIDatabaseSettings>(
             builder.Configuration.GetSection(nameof(APIDatabaseSettings)));
+
+
+                service.Configure<FormOptions>(opt =>
+                {
+                    opt.MultipartBodyLengthLimit = 600 * 1024 * 1024;
+                });
+
+
+
+
 
 
             // добавляем сервисы сжатия
@@ -88,22 +100,55 @@ namespace API
                 app.UseSwaggerUI();
             }
 
-                
-           // app.UseResponseCompression(); // подключаем сжатие
+				app.UseStaticFiles();        //static files for web
 
-            
-            app.UseStaticFiles();        //static files for web
-            app.UseAuthentication();    // аутентификация
-            app.UseAuthorization();     // авторизация
-            app.UseHttpsRedirection();
-            app.UseAuthorization();
+				app.UseHttpsRedirection();
+				app.UseAuthorization();
 
 
-           
-            app.MapControllers();
-                app.UseRateLimiter();
 
-                app.Run();
+				app.MapControllers();
+				app.UseRateLimiter();
+				app.UseRouting();
+				app.UseAuthentication();    // аутентификация
+				app.UseAuthorization();     // авторизация
+				app.Use(async (context, next) =>
+				{
+					// получаем конечную точку
+					Endpoint endpoint = context.GetEndpoint();
+
+					if (endpoint != null)
+					{
+						// получаем шаблон маршрута, который ассоциирован с конечной точкой
+						var routePattern = (endpoint as Microsoft.AspNetCore.Routing.RouteEndpoint)?.RoutePattern?.RawText;
+
+						Debug.WriteLine($"Endpoint Name: {endpoint.DisplayName}");
+						Debug.WriteLine($"Route Pattern: {routePattern}");
+
+						// если конечная точка определена, передаем обработку дальше
+						await next();
+					}
+					else
+					{
+						Debug.WriteLine("Endpoint: null");
+						// если конечная точка не определена, завершаем обработку
+						await context.Response.WriteAsync("You are going too far (Page not found 404)");
+					}
+				});
+				app.UseEndpoints(endpoints =>
+				{					
+					endpoints.MapGet("/", async context =>
+					{
+						context.Response.Redirect("/Web/Log/Login");
+					});
+				});
+
+				// app.UseResponseCompression(); // подключаем сжатие
+
+
+
+
+				app.Run();
             
             }
             catch(Exception ex)

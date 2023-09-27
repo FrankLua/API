@@ -1,25 +1,41 @@
 ﻿using Amazon;
+using Amazon.Runtime;
+using Amazon.Runtime.Internal.Util;
 using Amazon.S3;
 using Amazon.S3.Model;
+using Amazon.S3.Transfer;
 using API.DAL.Entity.Models;
 using API.DAL.Entity.SupportClass;
 using API.Services.ForS3.Int;
+using SharpCompress.Common;
 using System;
 using System.Net;
+using System.Net.Mime;
 
 namespace API.Services.ForS3.Rep
 {
     public class Aws3Services : IAws3Services
     {
-        private readonly string _bucketName;
+		private AmazonS3Config config;
+		private readonly string _bucketName;
         private readonly IAmazonS3 _awsS3Client;
-
-        public Aws3Services(string awsAccessKeyId, string awsSecretAccessKey, string bucketName, string url)
+		
+		public Aws3Services(string awsAccessKeyId, string awsSecretAccessKey, string bucketName, string url)
         {
-            AmazonS3Config config = new AmazonS3Config();
+			
+            var newRegion = RegionEndpoint.GetBySystemName("ru-1");
+			AmazonS3Config config = new AmazonS3Config() {
+				
+			    RegionEndpoint = newRegion,
+				Timeout = TimeSpan.FromSeconds(600),				
+				ReadWriteTimeout = TimeSpan.FromSeconds(600),
+				RetryMode = RequestRetryMode.Standard,
+				MaxErrorRetry = 3,
+				
+			};
             config.ServiceURL = "https://s3.timeweb.com";
             _bucketName = bucketName; 
-			_awsS3Client = new AmazonS3Client(awsAccessKeyId, awsSecretAccessKey, config);
+			_awsS3Client = new AmazonS3Client(awsAccessKeyId, awsSecretAccessKey, clientConfig: config);
         }
 
         public async Task<bool> CheackFileAsync(string folder, string file)
@@ -151,27 +167,36 @@ namespace API.Services.ForS3.Rep
                 return null;                
             }
         }
-        public async Task<bool> UploadFileAsync(IFormFile file)
+		public async Task<bool> UploadFileAsync(IFormFile file, bool ad)
         {
+
+            var transfere = new TransferUtility(_awsS3Client);
+			int BufferSize = 50* 1024 * 1024;
+			string path = MimeType.GetFolderName(file.ContentType,ad);
             try
             {
-                using (var newMemoryStream = new MemoryStream())
+				
+				using (var newMemoryStream = new StreamContent(file.OpenReadStream(),bufferSize: BufferSize))
                 {
-                    file.CopyTo(newMemoryStream);
+                    var stream = await newMemoryStream.ReadAsStreamAsync();
 
-                    var uploadRequest = new PutObjectRequest
+
+					var uploadRequest = new TransferUtilityUploadRequest
                     {
-                        InputStream = newMemoryStream,
-                        Key = $"video/{file.FileName}",
+                        InputStream = stream,
+                        Key = $"{path}/{file.FileName}",
                         BucketName = _bucketName,
-                        ContentType = file.ContentType
-                    };
-                    PutObjectResponse response2 = await _awsS3Client.PutObjectAsync(uploadRequest);
+                        ContentType = file.ContentType,			
+
+					};
+					
+					WebRequest.DefaultWebProxy = null;
+					await transfere.UploadAsync(uploadRequest);
 
 
 
 
-                    return true;
+					return true;
                 }
             }
             catch (Exception)

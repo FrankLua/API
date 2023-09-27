@@ -234,9 +234,7 @@ td {
 }
 
 .div-type {
-    display: flex;
-    margin: 0 10% 15%;
-    justify-content: space-between;
+    margin-bottom: 20px;
 }
 
 .div-name {    

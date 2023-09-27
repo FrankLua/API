@@ -2,7 +2,7 @@
     margin-top: 20px;
     text-align: center;
 }
-.btn {
+.save {
     border: none;
     cursor: pointer;
     background-color: greenyellow;
@@ -41,7 +41,7 @@
     >th
 
 {
-    background-color: brown;
+    background-color: green;
     color: #fff;
 }
 
@@ -76,39 +76,55 @@
 }
 }
 
-.main-table-playlist {
-    >tbody
 
-{
-    >tr
-
-{
+.enable_row {
     >td
 
 {
+    text-align: center;
+    background-color: green;
+    color: #fff;
+}
+}
+.disable_row {
+    >td
+
+{
+    text-align:center;
     background-color: brown;
     color: #fff;
 }
-
 }
-}
-}
-
 .tables {
     align-content: center
 }
-
-.menu-board {
-    display: flex;
-    justify-content: space-between;
-    margin: 1% 2% 1% 2%;
-    >button
-
-{
-    height: 45px;
-    width: 100px;
+.btn-barter-enable {
+    background-image: url("/img//free-icon-more-7893184.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    font-weight: bold;
+    height: 62.5px;
+    padding-bottom: 2px;
+    width: 62.5px;
 }
-
+.btn-barter-disable {
+    background-image: url("/img/free-icon-interface-7893181.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    font-weight: bold;
+    height: 62.5px;
+    padding-bottom: 2px;
+    width: 62.5px;
+}
+.menu-board {
+    text-align: center;
+    margin: 1% 2% 1% 2%;
 }
 
 .hide {

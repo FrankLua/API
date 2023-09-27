@@ -10,6 +10,8 @@ namespace API.Services.ForAPI.Int
 
 		Task<Adfile> AddFile(IFormFile file, string login);
 
+		Task<bool> DeleteFile(string id, string login);
+
 
 	}
 }

@@ -22,7 +22,7 @@
 			<thead>
 				<tr>
 					<th>Имя плейлиста</th>
-					<th>Публичность</th>
+					<th>Владелец</th>
 				    <th>Тип</th>
 					<th>Редактор</th>
 					<th>Удалить</th>
@@ -34,7 +34,7 @@
 				<tbody>
 					<tr id="@item._id">
 						<td id="item">@item.name</td>
-						<td>Приватный</td>					    
+						<td>Мой</td>					    
 					    <td>Рекламный</td>
 						<td><a href="/Web/PlayLists/EditAd/?Id=@item._id">Редактировать</a></td>
 						<td><button id="button-delete" value="@item._id/Ad">Удалить</button></td>
@@ -46,7 +46,7 @@
 			<tbody>
 				<tr id="@item._id">
 					<td id="item">@item.name</td>
-					<td>Приватный</td>
+					<td>Мой</td>
 					<td>Медиа</td>
 					<td><a href="/Web/PlayLists/Edit/?Id=@item._id">Редактировать</a></td>
 					<td><button id="button-delete" value="@item._id/Med">Удалить</button></td>
@@ -75,10 +75,9 @@
 					<h3>Дополнительные настройки</h3>
 					<div class="div-type">
 						<div>
-							<select name="" id="is-public">
-								<option value="true">Публиный</option>
-								<option value="false">Приватный</option>
-							</select>
+							<p>
+								Выберите тип плейлиста
+							</p>
 						</div>
 						<div>
 							<select name="" id="playlist-type">

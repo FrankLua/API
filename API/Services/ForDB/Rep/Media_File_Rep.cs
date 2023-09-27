@@ -8,11 +8,13 @@ using API.Services.ForS3;
 using API.Services.ForS3.Configure;
 using API.Services.ForAPI.Int;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Hosting;
 
 namespace API.Services.ForAPI.Rep
 {
     public class Media_File_Rep : IMedia_File_Service
     {
+        private readonly IMongoCollection<Media_playlist> _media_playlist;
         private readonly IMongoCollection<Media_file> _media_file;
         private readonly IMongoCollection<User> _user;
         IMemoryCache _cache;
@@ -25,9 +27,12 @@ namespace API.Services.ForAPI.Rep
 
             _media_file = database.GetCollection<Media_file>("Media Files");
 
+
+
             _user = database.GetCollection<User>("Users");
 
             _cache = memoryCache;
+            _media_playlist = database.GetCollection<Media_playlist>("Media Playlists");
         }
 
         public async Task<Media_file> AddFile(IFormFile file, string login)
@@ -44,6 +49,8 @@ namespace API.Services.ForAPI.Rep
                 //{
                 await _user.UpdateOneAsync(Builders<User>.Filter.Eq("login", $"{login}"), Builders<User>.Update.Push("media-files", newfile._id.ToString()));
                 await _media_file.InsertOneAsync(newfile);
+                _cache.Remove(login);
+                _cache.Set(newfile._id.ToString(), newfile, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
                 //}
 
 
@@ -62,10 +69,21 @@ namespace API.Services.ForAPI.Rep
 
         public async Task<string> DeleteFile(string id, string login)
         {
+            
             try
             {
+                var playlist = await _media_playlist.FindAsync(playlist => playlist.media_files_id.Contains(id));
+                FilterDefinition<Media_playlist> u = new ExpressionFilterDefinition<Media_playlist>(playlist => playlist.media_files_id.Contains(id));
+                await _media_playlist.UpdateManyAsync(u, Builders<Media_playlist>.Update.Pull("media_files_id", id));
+
                 await _media_file.DeleteOneAsync(a => a._id.ToString() == id);
                 await _user.UpdateOneAsync(Builders<User>.Filter.Eq("login", $"{login}"), Builders<User>.Update.Pull("media-files", id));
+                foreach(var item in playlist.ToList())
+                {
+                    _cache.Remove(item._id.ToString());
+                }
+                _cache.Remove(login);
+                _cache.Remove(id);
                 return null;
             }
 
