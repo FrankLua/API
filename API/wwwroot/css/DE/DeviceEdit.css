@@ -105,6 +105,7 @@
     >td
 
 {
+    
     background-color: green;
     color: #fff;
 }
@@ -112,7 +113,11 @@
 }
 }
 }
-
+.table-edit-td{
+    display:flex;
+    justify-content:center
+        
+}
 .tables {
     align-content: center
 }

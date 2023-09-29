@@ -25,6 +25,58 @@ namespace API.Services.ForAPI.Rep
             _cache = memoryCache;
         }
 
+		public async Task<BaseResponse<bool>> CreateDevice(Device device, string login)
+		{
+			BaseResponse<bool> answer = new BaseResponse<bool>();
+			try
+			{
+                await _device.InsertOneAsync(device);
+				var filter = Builders<User>.Filter.Eq(s => s.login, login);
+                await _user.UpdateOneAsync(filter, Builders<User>.Update.Push("devices", device._id.ToString()));
+
+				_cache.Remove(login);
+				_cache.Set(device._id.ToString(), device);
+				answer.data = true;
+				return answer;
+			}
+			catch (Exception ex)
+			{
+				string[] par = new string[] { "Device" };
+				Loger.ExaptionForNotFound(ex, method: "CreateDevice", device._id, par);
+				answer.error = "Crush";
+				answer.data = false;
+				return answer;
+			}
+		}
+
+		public async Task<BaseResponse<bool>> DeleteDevice(string deviceid, string login)
+		{
+			BaseResponse<bool> answer = new BaseResponse<bool>();
+
+
+
+			try
+			{
+				var filterDeivce = Builders<Device>.Filter.Eq(s => s._id, deviceid);
+				var filterUser = Builders<User>.Filter.Eq(s => s.login, login);
+                var targetUser = Builders<User>.Update.Pull("devices", deviceid);
+				var delete = await _device.DeleteOneAsync(filterDeivce);
+                var update = await _user.UpdateOneAsync(filterUser, targetUser);
+				_cache.Remove(login);
+				_cache.Remove(deviceid);				
+				answer.data = true;
+				return answer;
+			}
+			catch (Exception ex)
+			{
+				string[] par = new string[] { "Device" };
+				Loger.ExaptionForNotFound(ex, method: "DeleteDevice", deviceid, par);
+				answer.error = "Crush";
+				answer.data = false;
+				return answer;
+			}
+		}
+
 		public async Task<BaseResponse<bool>> EditDevice(Device device)
 		{
 			BaseResponse<bool> answer = new BaseResponse<bool>();            

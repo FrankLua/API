@@ -11,5 +11,10 @@ namespace API.Services.ForAPI.Int
         BaseResponse<DeviceResponce> GetDeviceSync(string id);
 
         Task<BaseResponse<bool>> EditDevice(Device device);
-    }
+
+        Task<BaseResponse<bool>> CreateDevice(Device device,string login );
+
+        Task<BaseResponse<bool>> DeleteDevice(string deviceid, string login);
+
+	}
 }

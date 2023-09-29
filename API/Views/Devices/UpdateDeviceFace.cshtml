@@ -1,0 +1,27 @@
+﻿<table class="main-table">
+
+	<thead>
+		<tr>
+			<th>Имя девайса</th>
+			<th>Местоположение</th>
+			<th>Изменить</th>
+			<th>Удалить</th>
+		</tr>
+	</thead>
+	<tbody>
+		@if (Model != null)
+		{
+			foreach (var device in Model)
+			{
+				<tr>
+					<td id="item">@device.name</td>
+					<td>@device.address</td>
+					<td>
+						<a href="/Web/Devices/DevicesEdit/?Id=@device.id">Изменить</a>
+					</td>
+					<td><button id="del" value="@device.id">Удалить</button></td>
+				</tr>
+			}
+		}
+	</tbody>
+</table>

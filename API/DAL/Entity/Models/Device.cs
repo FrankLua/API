@@ -6,7 +6,15 @@ namespace API.DAL.Entity.Models
 
     public class Device
     {
-        [BsonId]
+		public Device(string name, string adress)
+		{
+			_id = ObjectId.GenerateNewId().ToString();
+			this.name = name;
+			this.adress = adress;
+			this.intervals = TimeIntervals.GetNewWeek();
+
+		}
+		[BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string _id { get; set; }
 
@@ -15,7 +23,7 @@ namespace API.DAL.Entity.Models
         [BsonElement("address")]
         public string adress { get; set; }
         [BsonElement("media_playlist")]
-        public string media_play_list { get; set; }
+        public string? media_play_list { get; set; }
 
 
         [BsonElement("ad_playlist")]
@@ -23,7 +31,8 @@ namespace API.DAL.Entity.Models
 
         [BsonElement("time_intervals")]
         public List<TimeIntervals>? intervals { get; set; }
+		
 
+	}
 
-    }
 }

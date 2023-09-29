@@ -1,8 +1,8 @@
 let btn_Edit = document.querySelectorAll('#edit');
 let btn_Apply = document.querySelectorAll('#apply')
-let selector = document.querySelector('#selected-day')
-let from = document.querySelector('#from')
-let to = document.querySelector('#to')
+
+const selectors = document.querySelectorAll("#selectors")
+
 let listDay = document.querySelectorAll('#list-Day');
 let btn_Save = document.querySelector('#btn-Save');
 let btn_Cancel = document.querySelectorAll('#cancel');
@@ -15,114 +15,65 @@ btn_update()
 
 function btn_update() { //Добавление функции для всех кнопок бартеров
     let btn_Edit = document.querySelectorAll('#edit');
-    let btn_Apply = document.querySelectorAll('#apply')
-    let selector = document.querySelector('#selected-day');
-    let from = document.querySelector('#from')
-    let to = document.querySelector('#to');
+    let btn_Apply = document.querySelectorAll('#apply')  
+    const selectors = document.querySelectorAll("#selectors")
     let listDay = document.querySelectorAll('#list-Day');
     let btn_Cancel = document.querySelectorAll('#cancel');
 
     add_Event_Btn_Edit()
     add_Event_Btn_Apply()
     add_Event_Btn_Cancel()
-    selector.oninput = function () { // функция для дней и времени
-        debugger
-        if (selector.value != "none") {
-            from.style.visibility = "visible";
-            to.style.visibility = "visible";
-        }
-        else {
-            from.style.visibility = "hidden";
-            to.style.visibility = "hidden";
-        }
-    }
-    from.oninput = function () {
+    
+    debugger
+    selectors.forEach((td => {
+        let from = td.children[0];
+        let to = td.children[2];
+        from.oninput = function () {
+            debugger
+            let parent = from.parentElement.childNodes;
+            let to = findElement(parent, "to")
+            if (from.value != "none" && to.value != "none") { // Проверяем выбраны не пустые опции
 
-        if (selector.value != "none" && from.value != "none" && to.value != "none") { // Проверяем выбраны не пустые опции
+                let oldValue = to.parentElement.children[1].innerText.split(' - ')[0]; // Парсим значение которое не будем менять
+                let anotherTime = Number(to.value.split(':')[0]); // Узнаем что выбранно в друго слекте 
+                let mainTime = Number(from.value.split(':')[0]);
+                let target = to.parentElement.children[1];  // берем массив нод опций
+                let day = from.parentElement.parentElement.children[0].innerText;// узнаем день который выбран в селекторе
 
-            let oldValue = selector.value.split('/')[1]; // Парсим значение которое не будем менять
-            let anotherTime = Number(to.value.split(' ')[1].split(':')[0]); // Узнаем что выбранно в друго слекте 
-            let mainTime = Number(from.value.split(' ')[1].split(':')[0]);
-            let optionsSelector = selector.options; // берем массив нод опций
-            let daySelector = selector.value.split('/')[2]// узнаем день который выбран в селекторе
-
-            if (mainTime <= anotherTime) { // сравниваем значения 
-                for (var opt, j = 0; opt = optionsSelector[j]; j++) {
-                    let dayOpt = opt.value.split('/')[2]; //узнаём день который опции через его value           
-
-
-                    if (dayOpt == daySelector) {
-
-                        let newValue = from.value + '/' + to.value + '/' + daySelector; // создаем новый value
-                        opt.value = newValue; // Added value in option
-                        selector.options[j].remove() //delete old option
-                        selector.insertBefore(opt, selector.children[j]) //added option in selector
-                        break;
-
-                    }
-
-                }
-                for (var item, j = 0; item = listDay[j]; j++) {
-
-
-                    if (item.children[0].innerText == daySelector) {
-                        let fromTime = from.value.split(' ')[1].split(':')[0] + ":" + from.value.split(' ')[1].split(':')[1]; // парсим данные из уже записаных нами ранее данных
-                        let toTime = to.value.split(' ')[1].split(':')[0] + ":" + to.value.split(' ')[1].split(':')[1];
-                        let newTime = fromTime + ' - ' + toTime;
-                        item.children[1].innerText = newTime;
-                        item.children[0].style.backgroundColor = "brown";
-                        item.children[1].style.backgroundColor = "brown";
-                        break;
-                    }
-
-                }
-            }
-
-
-
-
-        }
-
-    }
-    to.oninput = function () {
-
-        if (selector.value != "none" && to.value != "none" && from.value != "none") {
-            let oldValue = selector.value.split('/')[0];
-            let optionsSelector = selector.options;
-            let anotherTime = Number(from.value.split(' ')[1].split(':')[0]);
-            let mainTime = Number(to.value.split(' ')[1].split(':')[0]);
-            let daySelector = selector.value.split('/')[2];
-            if (anotherTime < mainTime) {
-                for (var opt, j = 0; opt = optionsSelector[j]; j++) {
-                    let dayOpt = opt.value.split('/')[2];
-
-                    if (dayOpt == daySelector) {
-                        let newValue = from.value + '/' + to.value + '/' + daySelector;
-                        opt.value = newValue;
-                        selector.options[j].remove()
-                        selector.insertBefore(opt, selector.children[j])
-                        break;
-                    }
-                }
-                for (var item, j = 0; item = listDay[j]; j++) {
-
+                if (mainTime < anotherTime) { // сравниваем значения 
+                    let restulString = `${from.value} - ${to.value}`;
+                    target.innerText = restulString;
                     debugger
-                    if (item.children[0].innerText == daySelector) {
-                        let fromTime = from.value.split(' ')[1].split(':')[0] + ":" + from.value.split(' ')[1].split(':')[1];
-                        let toTime = to.value.split(' ')[1].split(':')[0] + ":" + to.value.split(' ')[1].split(':')[1];
-                        let newTime = fromTime + ' - ' + toTime;
-                        item.children[1].innerText = newTime;
-                        item.children[0].style.backgroundColor = "brown";
-                        item.children[1].style.backgroundColor = "brown";
-                        break;
-                    }
-
+                    from.parentElement.parentElement.children[0].style.backgroundColor = "brown";
+                    from.parentElement.parentElement.children[1].style.backgroundColor = "brown";
                 }
             }
 
         }
+        to.oninput = function () {
+            debugger
+            let parent = to.parentElement.childNodes;
+            let from = findElement(parent, "from")
+            if (to.value != "none" && from.value != "none") {
+                debugger
 
-    }
+                let target = to.parentElement.children[1];
+                let anotherTime = Number(from.value.split(':')[0]);
+                let mainTime = Number(to.value.split(':')[0]);
+                if (anotherTime < mainTime) {
+                    let restulString = `${from.value} - ${to.value}`;
+                    target.innerText = restulString;
+                    debugger
+                    from.parentElement.parentElement.children[0].style.backgroundColor = "brown";
+                    from.parentElement.parentElement.children[1].style.backgroundColor = "brown";
+
+                }
+
+            }
+
+        }
+    }));
+    
 
     function add_Event_Btn_Cancel() {
         btn_Cancel.forEach((el => {
@@ -248,24 +199,32 @@ function btn_update() { //Добавление функции для всех к
 
 
 btn_Save.onclick = function () {
+    debugger;
     const _id = document.querySelector('#id').innerText;
     const name = document.querySelector('#name').innerText;
     const address = document.querySelector('#address').innerText;
-    const m_PlayLIst = document.querySelector('#m-PlayList').value;
-    const a_PlayLIst = document.querySelector('#a-PlayList').value;
+    var m_PlayLIst = document.querySelector('#m-PlayList').value;
+    var a_PlayLIst = document.querySelector('#a-PlayList').value;
 
-    
+    debugger
     const timeIntervals = searchTimeIntervals();
-    var device = new Device(_id, name, address, m_PlayLIst, a_PlayLIst)   
-    const day = new Date();
-    console.log(typeof (timeIntervals));
+    debugger
+    if (m_PlayLIst == "none")
+    {
+        m_PlayLIst = null;
+    }
+    
+    if (a_PlayLIst == "none") a_PlayLIst = undefined;
+    var device = new Device(_id, name, address, m_PlayLIst, a_PlayLIst)  
+    var answerDevice = JSON.stringify(device)
+    var answerIntervals = JSON.stringify(timeIntervals)
     debugger
     $.ajax({
         type: 'PUT',
-        url: 'DeviceSave',             
-        data: { device: device, times: timeIntervals },     
-
+        url: 'DeviceSave',
         
+        data: { deviceJson: answerDevice, intervalsJson: answerIntervals },    
+        datatype: "text",
         success: function (data) {            
                 debugger;
             var targetElementTitle = document.querySelector('#device-contentt');
@@ -306,7 +265,7 @@ class Device {
         this.adress = address;
         this.media_play_list = media_play_list;
         this.ad_playlist = ad_playlist;
-        this.intervals = intervals;
+        this.intervals = [];
     }
 }
 
@@ -315,24 +274,42 @@ class Device {
 
 
 function searchTimeIntervals() {
-    var options = document.querySelector('#selected-day').options;
-    var timeIntervals = []
     
-    for (var item, i = 1; item = options[i]; i++) {
-        let day = item.value.split('/')[2];
-        let from = item.value.split('/')[0];
-        let to = item.value.split('/')[1];  
-        let finalString = from.split(' ')[1].split(':')[0] +'/'+ to.split(' ')[1].split(':')[0] +'/'+ day;
-        //debugger
-        //let newTimeInterval = TimeIntervals.constructor(day, from, to)
-        timeIntervals.push(finalString);
+    var timeIntervals = []
+    var day = [];
+    days = searchDay();
+    debugger;
+    
+    for (var item, i = 0; item = document.querySelectorAll("#selectors")[i], day = days[i]; i++) {  
+
+        var result = `${day}/${item.children[1].innerText}`;
+        timeIntervals.push(result);
     }
     return timeIntervals;
 }
 
+function searchDay() {
+    debugger
+    var listDay =[]
+    document.querySelectorAll('#list-Day').forEach((el => {
+        listDay.push(el.children[0].innerText);
+    }))
+    return listDay;
+}
 
 
-
+function findElement(arrayElements, id) {
+   
+    let abc 
+    arrayElements.forEach( (element) => {
+        if (element.id == id) {
+            abc = element;            
+        }
+        
+    });      
+    return abc;
+    
+}
 
 
 

@@ -50,3 +50,69 @@ td {
 }
 }
 }
+.modal-create-divece {
+    width: 500px;
+    height: 350px;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    border-radius: 25px;
+    >.inputs
+
+{
+    margin-top: 25px;
+    margin-bottom: 25px;
+    >input
+
+{
+    border: none;
+    border-radius: 25px;
+    width: 250px;
+    height: 30px;
+}
+
+}
+
+> .send-create {
+    >button
+
+{
+    border: none;
+    cursor: pointer;
+    background-color: greenyellow;
+    border-radius: 25px;
+    width: 250px;
+    height: 55px;
+}
+
+}
+}
+.modal-overlay {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+}
+.added-Content {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.btn {
+    border: none;
+    cursor: pointer;
+    background-color: greenyellow;
+    border-radius: 25px;
+    width: 250px;
+    height: 55px;
+}

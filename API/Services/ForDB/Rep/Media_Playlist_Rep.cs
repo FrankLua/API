@@ -16,16 +16,16 @@ namespace API.Services.ForAPI.Rep
     {
         private readonly IMongoCollection<Media_playlist> _media_playlist;
         private readonly IMongoCollection<User> _user;
-        
-        IMemoryCache _cache;
+		private readonly IMongoCollection<Device> _device;
+		IMemoryCache _cache;
 
         public Media_Playlist_Rep(IAPIDatabaseSettings settings, IMongoClient mongoClient, IMemoryCache memoryCache)
         {
             var database = mongoClient.GetDatabase(settings.DatabaseName);
             _media_playlist = database.GetCollection<Media_playlist>("Media Playlists");
             _user = database.GetCollection<User>("Users");
-            
-            _cache = memoryCache;
+            _device = database.GetCollection<Device>("Device");
+			_cache = memoryCache;
         }
 
         public async Task<string> AddPlaylist(string login, Media_playlist newplaylist)
@@ -54,9 +54,21 @@ namespace API.Services.ForAPI.Rep
 			var responce = new BaseResponse<bool>();
 			try
 			{
+				var devices = await _device.FindAsync(device => device.media_play_list.Contains(idPlaylist));
+				FilterDefinition<Device> u = new ExpressionFilterDefinition<Device>(device => device.media_play_list.Contains(idPlaylist));
+				await _device.UpdateManyAsync(u, Builders<Device>.Update.Set("media_playlist",BsonNull.Value));
+
+
 				await _media_playlist.DeleteOneAsync(playlist => playlist._id.ToString() == idPlaylist);
 				await _user.UpdateOneAsync(Builders<User>.Filter.Eq("login", $"{login}"), Builders<User>.Update.Pull("media-playlist", idPlaylist));
+				foreach (var item in devices.ToList())
+				{
+					_cache.Remove(item._id.ToString());
+				}
+
 				_cache.Remove(idPlaylist);
+
+
 				_cache.Remove(login);
 				responce.data = true;
 				return responce;

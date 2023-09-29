@@ -6,6 +6,7 @@ using API.Services.ForAPI.Int;
 using Microsoft.Extensions.Caching.Memory;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 using ZstdSharp.Unsafe;
 
@@ -13,6 +14,7 @@ namespace API.Services.ForAPI.Rep
 {
 	public class Adfile_Rep : IAd_files_Service
 	{
+		private readonly IMongoCollection<Ad_playlist> _ad_playlist;
 		private readonly IMongoCollection<Adfile> _ad_file;
 		private readonly IMongoCollection<User> _user;
 		IMemoryCache _cache;
@@ -23,7 +25,9 @@ namespace API.Services.ForAPI.Rep
 		{
 			var database = mongoClient.GetDatabase(settings.DatabaseName);
 
-			_ad_file = database.GetCollection<Adfile>("Ad Files");
+            _ad_playlist = database.GetCollection<Ad_playlist>("Ad Playlist");
+
+            _ad_file = database.GetCollection<Adfile>("Ad Files");
 
 			_user = database.GetCollection<User>("Users");
 
@@ -57,8 +61,16 @@ namespace API.Services.ForAPI.Rep
 		{
 			try
 			{
-				await _ad_file.DeleteOneAsync(a => a._id.ToString() == id);
+                var playlist = await _ad_playlist.FindAsync(playlist => playlist.ad_files.Contains(new ad_files { file = id }));
+                FilterDefinition<Ad_playlist> filter = new ExpressionFilterDefinition<Ad_playlist>(playlist => playlist.ad_files.Contains(new ad_files { file = id }));
+                var update = Builders<Ad_playlist>.Update.PullFilter(p => p.ad_files, p => p.file == id);
+               await _ad_playlist.UpdateManyAsync(filter, update);
+                await _ad_file.DeleteOneAsync(a => a._id.ToString() == id);
 				await _user.UpdateOneAsync(Builders<User>.Filter.Eq("login", $"{login}"), Builders<User>.Update.Pull("ad-files", id));
+				foreach(var item in playlist.ToList())
+				{
+					_cache.Remove(item._id.ToString());
+				}
 				_cache.Remove(id);
 				_cache.Remove(login);
 				return true;
