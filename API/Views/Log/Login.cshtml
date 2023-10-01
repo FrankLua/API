@@ -1,0 +1,24 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model API.DAL.Entity.WebEntity.LogModel
+<body>
+    <div>
+        <form asp-action="Login" asp-controller="Log" method="post" asp-anti-forgery="true">
+
+            <div>
+                <label id="login">Логин<input asp-for="login"type="text"  /></label>
+                <label id="password">Пароль<input asp-for ="password" type="text" /></label>
+                <div class="form-group">
+                    <input type="submit" value="Войти" class="btn btn-outline-dark" />
+                </div>
+            </div>
+        </form>
+
+
+    </div>
+    <h1>Hello</h1>
+</body>
