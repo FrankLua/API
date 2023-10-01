@@ -27,13 +27,13 @@ namespace API.Controllers.Api
         private readonly IMedia_File_Service _file;
         private readonly IDevice_Service _device;
 
-        public MediaController(IAppConfiguration appConfiguration, IMedia_Playlist_Service playlist, IMedia_File_Service file, IDevice_Service device)
+        public MediaController(IAppConfiguration appConfiguration, IMedia_Playlist_Service playlist, IMedia_File_Service file, IDevice_Service device, IAws3Services aws3Services)
         {
             _device = device;
             _file = file;
             _playlist = playlist;
             _appConfiguration = appConfiguration;
-            _aws3Services = new Aws3Services(_appConfiguration.AwsAccessKey, _appConfiguration.AwsSecretAccessKey, _appConfiguration.BucketName, _appConfiguration.URL);
+            _aws3Services = aws3Services;
         }
         [HttpPost]
 
