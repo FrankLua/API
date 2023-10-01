@@ -120,12 +120,12 @@ namespace API.Services.ForS3.Rep
             catch (AmazonS3Exception ex)
             {
 
-                Loger.ExaptionForNotFound(ex, "AWS-GetFIle", id: file._id.ToString(), add: null);
+                Loger.ExceptionForNotFound(ex, "AWS-GetFIle", id: file._id.ToString(), add: null);
                 return null;
             }
             catch (Exception ex)
             {
-                Loger.Exaption(ex, "AWS3");
+                Loger.Exception(ex, "AWS3");
                 return null;
             }
         }
@@ -151,7 +151,7 @@ namespace API.Services.ForS3.Rep
             }
             catch (Exception ex)
             {
-                Loger.Exaption(ex, "AWS3");
+                Loger.Exception(ex, "AWS3");
                 return null;
             }
         }

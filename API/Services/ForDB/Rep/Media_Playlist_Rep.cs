@@ -76,13 +76,13 @@ namespace API.Services.ForAPI.Rep
 			catch (InvalidOperationException ex)
 			{
 				string[] par = new string[] { "Ad_playlist" };
-				Loger.ExaptionForNotFound(ex, method: "DeletePlaylist/Ad", login, par);
+				Loger.ExceptionForNotFound(ex, method: "DeletePlaylist/Ad", login, par);
 				responce.data = false;
 				return responce;
 			}
 			catch (Exception ex)
 			{
-				Loger.Exaption(ex, "DeletePlaylist/Ad");
+				Loger.Exception(ex, "DeletePlaylist/Ad");
 				responce.data = false;
 				return responce;
 			}
@@ -111,13 +111,13 @@ namespace API.Services.ForAPI.Rep
             catch (InvalidOperationException ex)
             {
                 string[] par = new string[] { "Med_playlist" };
-                Loger.ExaptionForNotFound(ex, method: "EditPlaylist/Med", id, par);
+                Loger.ExceptionForNotFound(ex, method: "EditPlaylist/Med", id, par);
 
                 return false;
             }
             catch (Exception ex)
             {
-                Loger.Exaption(ex, "EditPlaylist/Med");
+                Loger.Exception(ex, "EditPlaylist/Med");
 
                 return false;
             }
@@ -151,13 +151,13 @@ namespace API.Services.ForAPI.Rep
             catch (InvalidOperationException ex)
             {
                 string[] par = new string[] { "Media_playlist" };
-                Loger.ExaptionForNotFound(ex, method: "GetMediaPlaylist", mongo_db_id, par);
+                Loger.ExceptionForNotFound(ex, method: "GetMediaPlaylist", mongo_db_id, par);
                 answer.error = "NotFound";
                 return answer;
             }
             catch (Exception ex)
             {
-                Loger.Exaption(ex,"GetMediaPlaylist");
+                Loger.Exception(ex,"GetMediaPlaylist");
                 answer.error = "Crush";
                 return answer;
             }
@@ -175,7 +175,7 @@ namespace API.Services.ForAPI.Rep
             }
             catch (Exception ex)
             {
-                Loger.Exaption(ex, "GetMediaPlaylist");
+                Loger.Exception(ex, "GetMediaPlaylist");
                 answer.error = "Crush";
                 return answer;
             }
@@ -215,12 +215,12 @@ namespace API.Services.ForAPI.Rep
             catch (InvalidOperationException ex)
             {
                 string[] par = new string[] { "Media_playlist" };
-                Loger.ExaptionForNotFound(ex, method: "GetPlayListUser", login, par);                
+                Loger.ExceptionForNotFound(ex, method: "GetPlayListUser", login, par);                
                 return null;
             }
             catch (Exception ex)
             {
-                Loger.Exaption(ex, "GetPlayLIstUser");
+                Loger.Exception(ex, "GetPlayLIstUser");
                 return null;
             }
 

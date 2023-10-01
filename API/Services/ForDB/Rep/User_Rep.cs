@@ -64,7 +64,7 @@ namespace API.Services.ForAPI.Rep
             catch (InvalidOperationException ex)
             {
                 string[] par = new string[] { "User" };
-                Loger.ExaptionForNotFound(ex, method: "CheakUser", username, par);
+                Loger.ExceptionForNotFound(ex, method: "CheakUser", username, par);
                 response.error = "NotFound";
                 return response;
             }
@@ -102,12 +102,12 @@ namespace API.Services.ForAPI.Rep
             catch (InvalidOperationException ex)
             {
                 string[] par = new string[] { "User" };
-                Loger.ExaptionForNotFound(ex, method: "GetUserInfo", login, par);
+                Loger.ExceptionForNotFound(ex, method: "GetUserInfo", login, par);
                 return null;
             }
             catch (Exception ex)
             {
-                Loger.Exaption(ex, "GetUserInfo");
+                Loger.Exception(ex, "GetUserInfo");
                 answer.error = "Crush";
                 return answer;
             }
@@ -162,13 +162,13 @@ namespace API.Services.ForAPI.Rep
             catch (InvalidOperationException ex)
             {
                 string[] par = new string[] { "User or Device" };
-                Loger.ExaptionForNotFound(ex, method: "GetUserDevice", login, par);
+                Loger.ExceptionForNotFound(ex, method: "GetUserDevice", login, par);
                 answer.error = "Device not found";
                 return answer;
             }
             catch (Exception ex)
             {
-                Loger.Exaption(ex, "Get-User-Device");
+                Loger.Exception(ex, "Get-User-Device");
                 answer.error = "Crush!";
                 return answer;
             }
@@ -198,12 +198,12 @@ namespace API.Services.ForAPI.Rep
             catch (InvalidOperationException ex)
             {
                 string[] par = new string[] { "User" };
-                Loger.ExaptionForNotFound(ex, method: "GetUserFilesId", login, par);
+                Loger.ExceptionForNotFound(ex, method: "GetUserFilesId", login, par);
                 return null;
             }
             catch (Exception ex)
             {
-                Loger.Exaption(ex, "GetUserFilesId");
+                Loger.Exception(ex, "GetUserFilesId");
                 return null;
             }
 
@@ -233,12 +233,12 @@ namespace API.Services.ForAPI.Rep
 			catch (InvalidOperationException ex)
 			{
 				string[] par = new string[] { "User" };
-				Loger.ExaptionForNotFound(ex, method: "GetUserAdFilesId", login, par);
+				Loger.ExceptionForNotFound(ex, method: "GetUserAdFilesId", login, par);
 				return null;
 			}
 			catch (Exception ex)
 			{
-				Loger.Exaption(ex, "GetUserAdFilesId");
+				Loger.Exception(ex, "GetUserAdFilesId");
 				return null;
 			}
 		}

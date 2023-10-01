@@ -58,7 +58,7 @@ namespace API.Controllers.Api
             catch (Exception ex)
             {
                 BaseResponse<FileContentResult> badResponse = new BaseResponse<FileContentResult>();
-                Loger.Exaption(ex, "Upload");
+                Loger.Exception(ex, "Upload");
                 badResponse.error = "Error";
                 return badResponse;
             }
