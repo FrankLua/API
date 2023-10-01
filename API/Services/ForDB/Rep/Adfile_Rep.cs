@@ -53,7 +53,7 @@ namespace API.Services.ForAPI.Rep
 			}
 			catch (Exception ex)
 			{
-				Loger.Exaption(ex, "Add-File");
+				Loger.Exception(ex, "Add-File");
 				return null;
 			}
 		}
@@ -80,7 +80,7 @@ namespace API.Services.ForAPI.Rep
 
 			catch (Exception ex)
 			{
-				Loger.Exaption(ex, "Add-File");
+				Loger.Exception(ex, "Add-File");
 				return false;
 			}
 		}
@@ -106,7 +106,7 @@ namespace API.Services.ForAPI.Rep
 			}
 			catch (Exception ex)
 			{
-				Loger.Exaption(ex, "getAdfile");
+				Loger.Exception(ex, "getAdfile");
 				return null;
 			}
 		}
@@ -138,7 +138,7 @@ namespace API.Services.ForAPI.Rep
 			}
 			catch (Exception ex)
 			{
-				Loger.Exaption(ex, "getAdfile");
+				Loger.Exception(ex, "getAdfile");
 				return null;
 			}
 		}

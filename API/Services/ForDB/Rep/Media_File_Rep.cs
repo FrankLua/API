@@ -60,7 +60,7 @@ namespace API.Services.ForAPI.Rep
             }
             catch (Exception ex)
             {
-                Loger.Exaption(ex,"Add-File");
+                Loger.Exception(ex,"Add-File");
                 return null;
             }
 
@@ -120,12 +120,12 @@ namespace API.Services.ForAPI.Rep
             catch (InvalidOperationException ex)
             {
                 string[] par = new string[] { "Media_file" };
-                Loger.ExaptionForNotFound(ex, method: "GetFile", mongo_db_id, par);                
+                Loger.ExceptionForNotFound(ex, method: "GetFile", mongo_db_id, par);                
                 return null;
             }
             catch (Exception ex)
             {
-                Loger.Exaption(ex,"GetFile");
+                Loger.Exception(ex,"GetFile");
                 return null;
             }
         }
@@ -145,12 +145,12 @@ namespace API.Services.ForAPI.Rep
             catch (InvalidOperationException ex)
             {
                 string[] par = new string[] { "Media_file" };
-                Loger.ExaptionForNotFound(ex, method: "GetFiles", "List-Files", par);
+                Loger.ExceptionForNotFound(ex, method: "GetFiles", "List-Files", par);
                 return null;
             }
             catch (Exception ex)
             {
-                Loger.Exaption(ex,"Get-files");
+                Loger.Exception(ex,"Get-files");
                 return null;
             }
         }

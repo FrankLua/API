@@ -53,13 +53,13 @@ namespace API.Services.ForAPI.Rep
             catch (InvalidOperationException ex)
             {
                 string[] par = new string[] { "ad_playlis" };
-                Loger.ExaptionForNotFound(ex, method: "GetPlaylistAsyncbyId", id: idPlaylist, par);
+                Loger.ExceptionForNotFound(ex, method: "GetPlaylistAsyncbyId", id: idPlaylist, par);
 				answer.error = "NotFound";
                 return null;
             }
             catch (Exception e) 
 			{
-				Loger.Exaption(e,"GetPlaylist");
+				Loger.Exception(e,"GetPlaylist");
 				answer.error = "Crush";
 				return answer;
 			}
@@ -81,7 +81,7 @@ namespace API.Services.ForAPI.Rep
 			}
 			catch(Exception ex)
 			{
-				Loger.Exaption(ex, "Add_AD_Playlist");
+				Loger.Exception(ex, "Add_AD_Playlist");
 				responce.error = "Crush";
 				responce.data = false;
 				return responce;
@@ -121,12 +121,12 @@ namespace API.Services.ForAPI.Rep
 			catch (InvalidOperationException ex)
 			{
 				string[] par = new string[] { "Ad_playlist" };
-				Loger.ExaptionForNotFound(ex, method: "GetPlayListUser", login, par);
+				Loger.ExceptionForNotFound(ex, method: "GetPlayListUser", login, par);
 				return null;
 			}
 			catch (Exception ex)
 			{
-				Loger.Exaption(ex, "GetPlayLIstUser/Ad");
+				Loger.Exception(ex, "GetPlayLIstUser/Ad");
 				return null;
 			}
 		}
@@ -157,13 +157,13 @@ namespace API.Services.ForAPI.Rep
 			catch (InvalidOperationException ex)
 			{
 				string[] par = new string[] { "Ad_playlist" };
-				Loger.ExaptionForNotFound(ex, method: "DeletePlaylist/Ad", login, par);
+				Loger.ExceptionForNotFound(ex, method: "DeletePlaylist/Ad", login, par);
 				responce.data = false;
 				return responce;
 			}
 			catch (Exception ex)
 			{
-				Loger.Exaption(ex, "DeletePlaylist/Ad");
+				Loger.Exception(ex, "DeletePlaylist/Ad");
 				responce.data = false;
 				return responce;
 			}
@@ -189,13 +189,13 @@ namespace API.Services.ForAPI.Rep
             catch (InvalidOperationException ex)
             {
                 string[] par = new string[] { "Ad_playlist" };
-                Loger.ExaptionForNotFound(ex, method: "EditPlaylist/Ad", newPlayList._id, par);
+                Loger.ExceptionForNotFound(ex, method: "EditPlaylist/Ad", newPlayList._id, par);
                 
                 return false;
             }
             catch (Exception ex)
             {
-                Loger.Exaption(ex, "EditPlaylist/Ad");
+                Loger.Exception(ex, "EditPlaylist/Ad");
                 
                 return false;
             }

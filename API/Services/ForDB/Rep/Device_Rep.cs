@@ -42,7 +42,7 @@ namespace API.Services.ForAPI.Rep
 			catch (Exception ex)
 			{
 				string[] par = new string[] { "Device" };
-				Loger.ExaptionForNotFound(ex, method: "CreateDevice", device._id, par);
+				Loger.ExceptionForNotFound(ex, method: "CreateDevice", device._id, par);
 				answer.error = "Crush";
 				answer.data = false;
 				return answer;
@@ -70,7 +70,7 @@ namespace API.Services.ForAPI.Rep
 			catch (Exception ex)
 			{
 				string[] par = new string[] { "Device" };
-				Loger.ExaptionForNotFound(ex, method: "DeleteDevice", deviceid, par);
+				Loger.ExceptionForNotFound(ex, method: "DeleteDevice", deviceid, par);
 				answer.error = "Crush";
 				answer.data = false;
 				return answer;
@@ -95,7 +95,7 @@ namespace API.Services.ForAPI.Rep
             catch(Exception ex)
             {
 				string[] par = new string[] { "Device" };
-				Loger.ExaptionForNotFound(ex, method: "GetDevice", device._id, par);
+				Loger.ExceptionForNotFound(ex, method: "GetDevice", device._id, par);
 				answer.error = "Crush";
 				answer.data = false;
 				return answer;
@@ -127,13 +127,13 @@ namespace API.Services.ForAPI.Rep
             catch (InvalidOperationException ex)
             {
                 string[] par = new string[] {"Device"};
-                Loger.ExaptionForNotFound(ex,method:"GetDevice",id, par);
+                Loger.ExceptionForNotFound(ex,method:"GetDevice",id, par);
                 answer.error = "Crush";
                 return answer;
             }
             catch (Exception ex) 
             {
-                Loger.Exaption(ex, "GetDevice");
+                Loger.Exception(ex, "GetDevice");
                 answer.error = "Crush";
                 return answer;
             }
@@ -157,7 +157,7 @@ namespace API.Services.ForAPI.Rep
             }
             catch (Exception ex)
             {
-                Loger.Exaption(ex, "GetDevice");
+                Loger.Exception(ex, "GetDevice");
                 answer.error = "Crush";
                 return answer;
             }
