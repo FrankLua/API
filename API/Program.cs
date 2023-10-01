@@ -38,7 +38,7 @@ namespace API
                 var builder = WebApplication.CreateBuilder(args);
 
             var service = builder.Services;
-            ScopeBuilder.InitializerRateLimiter(service);
+            //ScopeBuilder.InitializerRateLimiter(service);
 
 
 
@@ -57,14 +57,15 @@ namespace API
 
 
 
-            // добавляем сервисы сжатия
-            service.Configure<GzipCompressionProviderOptions>(options => options.Level = System.IO.Compression.CompressionLevel.Fastest);
-            service.AddResponseCompression(options =>
-            {
-                options.Providers.Add<GzipCompressionProvider>();
-                options.EnableForHttps = true;
-                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" });
-            });
+                // добавляем сервисы сжатия
+
+                //service.Configure<GzipCompressionProviderOptions>(options => options.Level = System.IO.Compression.CompressionLevel.Fastest);
+                //service.AddResponseCompression(options =>
+                //{
+                //    options.Providers.Add<GzipCompressionProvider>();
+                //    options.EnableForHttps = true;
+                //    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" });
+                //});
 
 
                 // добавление кэширования
@@ -72,14 +73,14 @@ namespace API
 
 
 
-                service.AddSingleton<IAPIDatabaseSettings>(sp => 
+                service.AddScoped<IAPIDatabaseSettings>(sp => 
             sp.GetRequiredService<IOptions<APIDatabaseSettings>>().Value);
-            service.AddSingleton<IMongoClient>(sp =>
+            service.AddScoped<IMongoClient>(sp =>
             new MongoClient(builder.Configuration.GetValue<string>("APIDatabaseSettings:ConnectionString")));
-            service.AddSingleton<IAppConfiguration, AppConfiguration>();
+            service.AddScoped<IAppConfiguration, AppConfiguration>();
             // Add services to the container.
             ScopeBuilder.InitializerServices(service);
-            service.AddControllers();
+            //service.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             service.AddEndpointsApiExplorer();
             service.AddSwaggerGen();
@@ -108,7 +109,7 @@ namespace API
 
 
 				app.MapControllers();
-				app.UseRateLimiter();
+				//app.UseRateLimiter();
 				app.UseRouting();
 				app.UseAuthentication();    // аутентификация
 				app.UseAuthorization();     // авторизация

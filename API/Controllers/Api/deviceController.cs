@@ -8,8 +8,8 @@ using API.DAL.Entity.ResponceModels;
 using API.DAL.Entity.SupportClass;
 using MongoDB.Bson;
 using Amazon.Runtime.Internal;
-using API.Services.ForAPI.Int;
 using Microsoft.AspNetCore.RateLimiting;
+using API.Services.ForDB.Int;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 

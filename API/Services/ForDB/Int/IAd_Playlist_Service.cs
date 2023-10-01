@@ -11,7 +11,7 @@ namespace API.Services.ForAPI.Int
 		Task<BaseResponse<bool>> DeletePlaylist(string login ,string idPlaylist);
 		Task<BaseResponse<bool>> AddPlaylist(string login, Media_Ad_playlist newplaylist);
 
-        Task<bool> Edit(string id, string[] new_file);
+        Task<bool> Edit(Media_Ad_playlist _Ad_Playlist);
 
         Task<List<Media_Ad_playlist>> GetPlayListUser(string login);
 

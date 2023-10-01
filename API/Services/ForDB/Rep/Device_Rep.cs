@@ -4,7 +4,7 @@ using API.DAL.Entity.APIResponce;
 using API.DAL.Entity.Models;
 using API.DAL.Entity.ResponceModels;
 using API.DAL.Entity.SupportClass;
-using API.Services.ForAPI.Int;
+using API.Services.ForDB.Int;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;

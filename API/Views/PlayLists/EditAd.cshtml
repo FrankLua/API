@@ -9,16 +9,17 @@
     <link href="~/css/PL/Edit.css" rel="stylesheet" asp-append-version="true" />
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="~/js/PL/Tables-Face.js" defer></script>
+    <script src="~/js/PL/Time-Input.js" defer></script>
 </head>
 
 
 <div class="menu-board">
-    <h2 id="main" title="@Model._id">@Model.name</h2>
+    <h2 id="main" data-name="@Model.name" title="@Model._id">@Model.name</h2>
     <input placeholder="Поиск по имени" type="text" id="elastic">
     
 
 </div>
-<div class="lable-page">
+<div class="lable-page" id="lable-page">
     <table class="main-table-playlist" id="table" title="Ad">
         <thead>
             <tr>
@@ -33,6 +34,9 @@
                 </th>
                 <th data-type="string" title="true">
                     Публичность
+                </th>
+                <th data-type="string" title="true">
+                    Время воспроизведения
                 </th>
             </tr>
         </thead>
@@ -56,6 +60,9 @@
                             <td>
                                 <p>Приватный</p>
                             </td>
+                            <td>
+                                <input id="time" name="time" value="@Model.ad_files.Find(a => a.file ==item._id.ToString()).start_time" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57">
+                            </td>
                         </tr>
                     }
 
@@ -75,13 +82,17 @@
                             <td>
                                 <p>Приватный</p>
                             </td>
+                            <td>
+                                <input id ="time" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+                                >
+                            </td>
                         </tr>
                     }
                 }
                 else
                 {
                     <tr class="disable_row" title="none">
-                        <td colspan="4"><p>Здесь ничего нет</p></td>
+                        <td colspan="5"><p>Здесь ничего нет</p></td>
                     </tr>
                 }
             }

@@ -22,69 +22,140 @@ btn_update()
 
 
 btn_save.onclick = function () { //Функция для кнопки сохранить
-    debugger
-    let rowsArray = Array.from(table.rows).slice(1);
+    
+    let rowsArray = Array.from(document.querySelector(".main-table-playlist").rows).slice(1);
     const type = table.title;
     let url1;
     let url2;
     let answer = [];
-    rowsArray.forEach((row) => {
-        let state_btn = row.cells[0]
-            .getElementsByTagName("div")[0]
-            .title
-        
-        if (state_btn == "true") {            
-            answer.push(row.title.split('/')[0]);
-            
-        }
-
-    });
-    debugger
+    
+    
+    
     if (type == "Ad") {
         url1 = "/Web/PlayLists/Edit/EditAdPL";
-        url2 = `/Web/PlayLists/Edit/EditUpdateAd?Id=${main_id}`
+        url2 = `/Web/PlayLists/Edit/EditUpdateAd?Id=${main_id}`;
+        let intervals = []; // переменная для интервалов (проверок над ними)
+        let correctly = true; // переменная для отслеживания всё ли корректно заполненр
+        rowsArray.forEach((row) => {
+            let state_btn = row.cells[0]
+                .getElementsByTagName("div")[0]
+                .title
+
+            if (state_btn == "true") {
+                let id = row.title.split('/')[0];
+                let time = row.cells[4].children[0].value;
+                if (time.length != 5) {
+                    alert("You did not correctly write time")
+                    correctly = false;
+                    return;
+                }
+                
+                let interval = new ad_files(id, time);
+                
+                
+                intervals.push(interval);
+            }
+
+        });
+        
+        boolintevals = searchBadIntervals(intervals);        
+        let playlist = JSON.stringify(new Media_Ad_playlist(main_id, document.querySelector('#main').dataset.name, intervals));       
+        debugger
+        if (correctly & boolintevals) {
+            $.ajax({
+                type: 'POST',
+                url: url1,
+                data: { playlistJson:playlist},
+                success: function (data) {
+                    if (data == true) {
+
+                        var targetElementTitle = document.querySelector(".content");
+
+                        
+                        $.ajax({
+                            url: url2,
+                            dataType: 'html',
+                            success: function (data) {
+                                debugger
+                                document.querySelector('#lable-page').innerHTML = data;
+                                
+                                alert("Changes is saved");
+                                startTimeBTN();
+                                btn_update();
+                                debugger
+
+
+                            }
+                        })
+                    }
+                    else {
+
+                    }
+                },
+                error: function () {
+                    alert("Произошел сбой");
+                }
+            });
+
+        }
+
+
+
+        
     }
     else {
+        rowsArray.forEach((row) => {
+            let state_btn = row.cells[0]
+                .getElementsByTagName("div")[0]
+                .title
+
+            if (state_btn == "true") {
+                answer.push(row.title.split('/')[0]);
+
+            }
+
+        });
         url1 = 'EditPL';
         url2 = `/Web/PlayLists/Edit/EditUpdate/?Id=${main_id}`;
+        $.ajax({
+            type: 'POST',
+            url: url1,
+            data: { id: main_id, new_list_ids: answer },
+            success: function (data) {
+                if (data == true) {
+
+                    var targetElementTitle = document.querySelector(".content");
+
+                    //targetElement.load(`/Web/PlayLists/Edit/EditUpdate/?Id=${main_id} .content`);
+                    $.ajax({
+                        url: url2,
+                        dataType: 'html',
+                        success: function (data) {
+                            debugger
+                            var kel = document.querySelector('.lable-page').innerHTML;
+                            kel.innerHTML = data;
+                            alert("Changes is saved");
+                            //$('#lable-page').innerHTML = data;
+
+
+                            //targetElement.remove();
+                            debugger
+
+
+                        }
+                    })
+                }
+                else {
+
+                }
+            },
+            error: function () {
+                alert("Произошел сбой");
+            }
+        });
     }
     
-    $.ajax({
-        type: 'POST',
-        url: url1,
-        data: { id: main_id, new_list_ids:answer },
-        success: function (data) {
-            if (data == true) {
-                
-                var targetElementTitle = document.querySelector(".content");
-                
-                //targetElement.load(`/Web/PlayLists/Edit/EditUpdate/?Id=${main_id} .content`);
-                $.ajax({
-                    url: url2,
-                    dataType: 'html',
-                    success: function (data) {
-                        debugger
-                        var kel = document.querySelector('.lable-page').innerHTML;
-                        kel.innerHTML = data;
-                        alert("Changes is saved");
-                        //$('#lable-page').innerHTML = data;
-                        
-
-                        //targetElement.remove();
-                        debugger
-                        
-                        
-                    }
-                })
-            }
-            else {
-                
-            }
-        },
-        error: function () {
-            alert("Произошел сбой");
-        }
-    });
+   
 }
 
 
@@ -134,10 +205,23 @@ document.querySelector('#elastic').oninput = function () { //функция для импута 
 
 }
 
+class Media_Ad_playlist {
+    constructor(id, name, ad_files) {
+        this._id = id,
+            this.name = name,
 
+            this.ad_files = ad_files
 
+    }
 
+}
 
+class ad_files {
+    constructor(file, start) {
+        this.file = file,
+            this.start_time = start
+    }
+}
 
 
 
@@ -154,7 +238,7 @@ function pageLoad(sender, args) {
 }
 
 function btn_update() { //Добавление функции для всех кнопок бартеров
-    barter_btn.forEach((el) => {
+    document.querySelectorAll('#btn-barter').forEach((el) => {
         el.addEventListener('click', () => { barter_btn_func(el) })
 
     })
@@ -233,7 +317,7 @@ function sortTablDown(colNum, type) {  // сортировка
     tbody.append(...rowsArray);
 }
 function sortTablUp(colNum, type) {
-    debugger
+    
     let tbody = table.querySelector('tbody');
     let rowsArray = Array.from(table.rows)
         .slice(1);
@@ -277,4 +361,30 @@ function sortTablUp(colNum, type) {
 
     rowsArray.sort(compare)
     tbody.append(...rowsArray);
+}
+
+
+
+
+function searchBadIntervals(array) {
+    let length = array.length;
+    let score = 0;
+    
+    for (var itemOne, i = 0;  i < length; i++) {
+        itemOne = array[i].start_time;
+        for (var itemTwo, j = 0; j < length ; j++) {
+            itemTwo = array[j].start_time;
+            if (itemOne == itemTwo) {
+                score++;
+            }
+        }
+
+    }
+    if (score > array.length) {
+        alert("You did not correctly write time")
+        return false;
+    }
+    else {
+        return true;
+    }
 }

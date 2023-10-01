@@ -7,6 +7,7 @@ using API.Services.ForAPI.Int;
 using Amazon.S3.Model;
 using MongoDB.Driver.Core.Misc;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace API.Controllers.Web
 {
@@ -140,9 +141,10 @@ namespace API.Controllers.Web
         [Route("Web/PlayLists/Edit/EditAdPL")]
         [HttpPost]
         [Authorize]
-        public async Task<bool> EditAdPL(string[] new_list_ids, string id)
+        public async Task<bool> EditAdPL(string playlistJson)
         {
-            bool answer = await _ad_playlist.Edit(id, new_list_ids);
+			var newPlaylist = JsonConvert.DeserializeObject<Media_Ad_playlist>(playlistJson);
+            bool answer = await _ad_playlist.Edit(newPlaylist);
             return (answer);
         }
         [Route("Web/PlayLists/Edit/EditUpdate")]
@@ -182,7 +184,7 @@ namespace API.Controllers.Web
 
             ViewBag.Disable_File = user_list;
             ViewBag.Enabled_File = playlist_file;
-            return View();
+            return View(playlist.data);
         }
     }
 }

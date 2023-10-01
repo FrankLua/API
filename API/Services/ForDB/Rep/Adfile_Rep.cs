@@ -4,6 +4,7 @@ using API.DAL.Entity.Models;
 using API.DAL.Entity.SupportClass;
 using API.Services.ForAPI.Int;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Hosting;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
@@ -58,11 +59,12 @@ namespace API.Services.ForAPI.Rep
 		}
 
 		public async Task<bool> DeleteFile(string id, string login)
-		{
-			try
+        {
+            try
 			{
-                var playlist = await _ad_playlist.FindAsync(playlist => playlist.ad_files.Contains(new ad_files { file = id }));
-                FilterDefinition<Ad_playlist> filter = new ExpressionFilterDefinition<Ad_playlist>(playlist => playlist.ad_files.Contains(new ad_files { file = id }));
+                var filter = Builders<Ad_playlist>.Filter.ElemMatch(x => x.ad_files, x => x.file == id);
+                var playlist = await _ad_playlist.FindAsync(filter);
+                //FilterDefinition<Ad_playlist> filter = new ExpressionFilterDefinition<Ad_playlist>(playlist => playlist.ad_files.Contains(new ad_files { file = id }));
                 var update = Builders<Ad_playlist>.Update.PullFilter(p => p.ad_files, p => p.file == id);
                await _ad_playlist.UpdateManyAsync(filter, update);
                 await _ad_file.DeleteOneAsync(a => a._id.ToString() == id);

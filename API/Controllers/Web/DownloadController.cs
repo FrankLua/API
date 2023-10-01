@@ -10,7 +10,7 @@ using API.Services.ForS3.Int;
 using API.Services.ForS3.Rep;
 using static API.DAL.Entity.SupportClass.MimeType;
 using System;
-
+using API.Services.ForDB.Int;
 
 namespace API.Controllers.Web
 {
@@ -98,7 +98,7 @@ namespace API.Controllers.Web
 		public async Task< IActionResult> DownloadFace(IFormFile file, [FromServices] Microsoft.Extensions.Hosting.IHostingEnvironment hostingEnvironment, bool ad)
 		{
 			
-
+			
 			if (file != null)
 			{
 				if (CheakMimetype(file.ContentType)&& await _aws3Services.CheackFileAsync(GetFolderName(file.ContentType,ad), file.FileName))
@@ -108,6 +108,7 @@ namespace API.Controllers.Web
 					{
 						var newfile = await _ad_file.AddFile(file, User.Identity.Name);
 						newfile.folder = GetFolderName(file.ContentType, ad);
+						
 						await _aws3Services.UploadFileAsync(file, ad);
 						return RedirectPermanent("~/Web/Download/DownloadFace");
 					}

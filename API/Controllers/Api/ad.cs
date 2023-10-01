@@ -12,6 +12,7 @@ using API.DAL.Entity.SupportClass;
 using API.Services.ForS3.Int;
 using API.Services.ForS3.Rep;
 using Microsoft.AspNetCore.RateLimiting;
+using API.Services.ForDB.Int;
 
 namespace API.Controllers.Api
 {
@@ -43,12 +44,14 @@ namespace API.Controllers.Api
 
             var document = await _aws3Services.DownloadAdFileAsync(file);
             
-            if (document == null)
-            {                
-                return NotFound();                
-            }
+                if (document == null)
+                {
+                    return NotFound();
+                }
+                return File(document.ResponseStream, file.mime_type, file.name);
+                       
             
-            return File(document.ResponseStream, file.mime_type, file.name);
+            
 
         }
         [EnableRateLimiting("ForOther")]

@@ -1,4 +1,5 @@
-﻿<div class="lable-page">
+﻿@model API.DAL.Entity.Models.Media_Ad_playlist
+
     <table class="main-table-playlist" id="table" title="Ad">
         <thead>
             <tr>
@@ -13,6 +14,9 @@
                 </th>
                 <th data-type="string" title="true">
                     Публичность
+                </th>
+                <th data-type="string" title="true">
+                    Время воспроизведения
                 </th>
             </tr>
         </thead>
@@ -36,6 +40,9 @@
                             <td>
                                 <p>Приватный</p>
                             </td>
+                            <td>
+                                <input id="time" name="time" value="@Model.ad_files.Find(a => a.file ==item._id.ToString()).start_time" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57">
+                            </td>
                         </tr>
                     }
 
@@ -55,17 +62,20 @@
                             <td>
                                 <p>Приватный</p>
                             </td>
+                            <td>
+                                <input id="time" value="" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57">
+                            </td>
                         </tr>
                     }
                 }
                 else
                 {
                     <tr class="disable_row" title="none">
-                        <td colspan="4"><p>Здесь ничего нет</p></td>
+                        <td colspan="5"><p>Здесь ничего нет</p></td>
                     </tr>
                 }
             }
 
         </tbody>
     </table>
-</div>
+

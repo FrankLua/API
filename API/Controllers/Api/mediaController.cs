@@ -5,6 +5,7 @@ using API.DAL.Entity.APIResponce;
 using API.DAL.Entity.Models;
 using API.DAL.Entity.SupportClass;
 using API.Services.ForAPI.Int;
+using API.Services.ForDB.Int;
 using API.Services.ForS3.Configure;
 using API.Services.ForS3.Int;
 using API.Services.ForS3.Rep;

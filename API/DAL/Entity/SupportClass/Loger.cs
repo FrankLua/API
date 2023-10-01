@@ -12,8 +12,8 @@ namespace API.DAL.Entity.SupportClass
 {
     public static class Loger
     {
-        private static Stopwatch _watch;
-        private static char separator = Path.DirectorySeparatorChar;
+        
+        
         private static string _filepath = "/app/logerfolder/log.txt";
         private static FileInfo _logfile = new FileInfo(_filepath);
         private static string str = "\n<========================================================>\n";

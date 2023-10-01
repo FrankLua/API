@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Amazon.Runtime.SharedInterfaces;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 
@@ -8,7 +9,7 @@ namespace API.DAL.Entity.Models
 	{
 		[BsonId]
 		[BsonRepresentation(BsonType.ObjectId)]
-		virtual public ObjectId _id { get; set; }
+		virtual public string _id { get; set; }
 
 		[BsonElement("name")]
 		public string name { get; set; }
@@ -21,6 +22,7 @@ namespace API.DAL.Entity.Models
 	}
 	public class Media_Ad_playlist : Ad_playlist
 	{
+        
 		public Media_Ad_playlist()
 		{
 			ad_files = new List<ad_files>();
@@ -63,6 +65,11 @@ namespace API.DAL.Entity.Models
 	}
 	public struct ad_files
 	{
+		public ad_files(string file, string start_time)
+		{
+			this.file = file;
+			this.start_time = start_time;
+		}
 		[BsonElement("file")]
 		[JsonPropertyName("id")]
 		public string file { get; set; }

@@ -13,7 +13,7 @@ namespace API.Services.ForAPI.Rep
 {
 	public class Ad_Playlist_Rep : IAd_Playlist_Service
 	{
-        IMemoryCache _cache;
+		IMemoryCache _cache;
 		private readonly IMongoCollection<Device> _device;
 		private readonly IMongoCollection<Media_Ad_playlist> _ad_playlist;
 		private readonly IMongoCollection<User> _user;
@@ -67,7 +67,7 @@ namespace API.Services.ForAPI.Rep
 
 		public async Task<BaseResponse<bool>> AddPlaylist(string login, Media_Ad_playlist newplaylist)
 		{
-			newplaylist._id = ObjectId.GenerateNewId();
+			newplaylist._id = ObjectId.GenerateNewId().ToString();
 			var responce = new BaseResponse<bool>();
 			try 
 			{
@@ -169,24 +169,19 @@ namespace API.Services.ForAPI.Rep
 			}
 		}
 
-        public async Task<bool> Edit(string id, string[] new_file)
+        public async Task<bool> Edit(Media_Ad_playlist newPlayList)
         {
             try
             {
-                var files = new_file.ToList();
 
-                var playlist = await _ad_playlist.FindAsync(playlist => playlist._id.ToString() == id).Result.FirstAsync();
+                FilterDefinition<Media_Ad_playlist> u = new ExpressionFilterDefinition<Media_Ad_playlist>(playlist => playlist._id == newPlayList._id);
 
-                await _ad_playlist.DeleteOneAsync(playlist => playlist._id.ToString() == id);
+                await _ad_playlist.ReplaceOneAsync(u, newPlayList);         
 
-				playlist.ad_files = new List<ad_files>();
+                
 
-                playlist.SetFiles(files);
-
-                await _ad_playlist.InsertOneAsync(playlist);
-
-                _cache.Remove(id);
-                _cache.Set(playlist._id.ToString(), playlist, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+                _cache.Remove(newPlayList._id);
+                _cache.Set(newPlayList._id, newPlayList, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
 
                 //await _media_playlisst.UpdateOneAsync(Builders<BsonDocument>.Filter.Eq("_id", $"{id}"), Builders<BsonDocument>.Update.Set("media_files_id", files));
                 return true;
@@ -194,7 +189,7 @@ namespace API.Services.ForAPI.Rep
             catch (InvalidOperationException ex)
             {
                 string[] par = new string[] { "Ad_playlist" };
-                Loger.ExaptionForNotFound(ex, method: "EditPlaylist/Ad", id, par);
+                Loger.ExaptionForNotFound(ex, method: "EditPlaylist/Ad", newPlayList._id, par);
                 
                 return false;
             }
