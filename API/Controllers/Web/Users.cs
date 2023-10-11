@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers.Web
 {
-    public class GC : Controller
+    public class Users : Controller
     {
-        [Route("Web/Gc")]
+        [Route("Web/User/Create")]
         [HttpGet]
         [Authorize]
-        public IActionResult GCs()
+        public IActionResult Create()
         {
             long totalMemory = System.GC.GetTotalMemory(false);
             System.GC.Collect();

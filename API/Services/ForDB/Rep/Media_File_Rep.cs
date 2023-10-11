@@ -9,6 +9,7 @@ using API.Services.ForS3.Configure;
 using API.Services.ForAPI.Int;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Hosting;
+using StackExchange.Redis;
 
 namespace API.Services.ForAPI.Rep
 {
@@ -35,13 +36,17 @@ namespace API.Services.ForAPI.Rep
             _media_playlist = database.GetCollection<Media_playlist>("Media Playlists");
         }
 
-        public async Task<Media_file> AddFile(IFormFile file, string login)
+        public async Task<Media_file> AddFile(IFormFile file, string login, string role)
         {
             Media_file newfile = new Media_file();
-            newfile.name = file.FileName;
-            newfile.is_public = false;
+            newfile.name = file.FileName;           
             newfile.mime_type = file.ContentType;
-            newfile._id = ObjectId.GenerateNewId();
+			switch (role)
+			{
+				case "admin":newfile.is_public = true; break;
+				case "user": newfile.is_public = false;  break;
+			}
+			newfile._id = ObjectId.GenerateNewId();
 
             try
             {
@@ -50,8 +55,7 @@ namespace API.Services.ForAPI.Rep
                 await _user.UpdateOneAsync(Builders<User>.Filter.Eq("login", $"{login}"), Builders<User>.Update.Push("media-files", newfile._id.ToString()));
                 await _media_file.InsertOneAsync(newfile);
                 _cache.Remove(login);
-                _cache.Set(newfile._id.ToString(), newfile, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
-                //}
+                _cache.Set(newfile._id.ToString(), newfile, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));              //}
 
 
 
@@ -154,5 +158,28 @@ namespace API.Services.ForAPI.Rep
                 return null;
             }
         }
-    }
+		public async Task<List<Media_file>> GetPublicFiles()
+		{
+			
+			try
+			{
+                var list = _media_file.FindAsync(f => f.is_public == true)
+                    .Result
+                    .ToList();
+
+				return list;
+			}
+			catch (InvalidOperationException ex)
+			{
+				string[] par = new string[] { "Media_file" };
+				Loger.ExceptionForNotFound(ex, method: "GetPublicFiles", "---", par);
+				return null;
+			}
+			catch (Exception ex)
+			{
+				Loger.Exception(ex, "Get-files");
+				return null;
+			}
+		}
+	}
 }

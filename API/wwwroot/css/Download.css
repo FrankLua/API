@@ -34,7 +34,7 @@
 .modal-window {
     background-color: white;
     width: 30%;
-    height: 30%;
+    height: 350px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -145,4 +145,33 @@ td {
     visibility: hidden;
     color: aliceblue;
     transition: all 0.3s ease-in-out;
+}
+.bar {
+    position: relative;
+    background-color: black;
+    width: 700px;
+    height: 30px;
+    border-radius: 25px;
+}
+
+.progress {
+    border-radius: 25px;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    max-width: 99%;
+    background-color: white;
+    height: 25px;
+    width: 100%;
+    text-align: center;
+    >p
+
+{
+    color: black;
+    margin: auto;
+    margin-top: 3px;
+}
 }

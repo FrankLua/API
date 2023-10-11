@@ -1,6 +1,7 @@
 ﻿
 
 using Amazon;
+using Amazon.Runtime.Internal.Util;
 using API.DAL.Entity.APIResponce;
 using API.DAL.Entity.Models;
 using API.DAL.Entity.SupportClass;
@@ -11,62 +12,41 @@ using API.Services.ForS3.Int;
 using API.Services.ForS3.Rep;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Caching.Memory;
 using MongoDB.Bson;
+using MongoDB.Bson.IO;
 using System.Net;
+using System.Text.Unicode;
 using TimewebNet.Exceptions;
 using TimeWebNet;
 
 namespace API.Controllers.Api
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class MediaController : Controller
     {
-        private readonly IAppConfiguration _appConfiguration;
-        private readonly IAws3Services _aws3Services;
-        private readonly IMedia_Playlist_Service _playlist;
-        private readonly IMedia_File_Service _file;
         private readonly IDevice_Service _device;
+        private readonly IMedia_File_Service _file;
+        private readonly IAppConfiguration _appConfiguration;
+        private readonly IAws3Services _aws3Services;        
+        private readonly IMedia_Playlist_Service _playlist;
+		IMemoryCache _cache;
 
-        public MediaController(IAppConfiguration appConfiguration, IMedia_Playlist_Service playlist, IMedia_File_Service file, IDevice_Service device, IAws3Services aws3Services)
+
+		public MediaController(IMemoryCache cache,IAppConfiguration appConfiguration,  IMedia_Playlist_Service playlist, IMedia_File_Service file, IDevice_Service device)
         {
-            _device = device;
+			_cache = cache;
+			_device = device;
             _file = file;
-            _playlist = playlist;
+            _playlist = playlist;          
             _appConfiguration = appConfiguration;
-            _aws3Services = aws3Services;
-        }
-        [HttpPost]
-
-        [Route("videoPost")]
-        public async Task<BaseResponse<FileContentResult>> UploadDocumentToS3([FromForm] IFormFile file)
-        {            
-            try
-            {
-
-                if (file == null)
-                {
-                    BaseResponse<FileContentResult> badResponse = new BaseResponse<FileContentResult>();
-                    badResponse.error = "BadQueryParam";                    
-                    return badResponse;
-                }
-
-                //var result = _aws3Services.UploadFileAsync(file);
-                BaseResponse<FileContentResult> response = new BaseResponse<FileContentResult>();
-
-                return response;
-            }
-            catch (Exception ex)
-            {
-                BaseResponse<FileContentResult> badResponse = new BaseResponse<FileContentResult>();
-                Loger.Exception(ex, "Upload");
-                badResponse.error = "Error";
-                return badResponse;
-            }
-        }
+			_aws3Services = new Aws3Services(_cache, _appConfiguration.AwsAccessKey, _appConfiguration.AwsSecretAccessKey, _appConfiguration.BucketName, _appConfiguration.URL);
+		}		
         
         [HttpGet]
-        [EnableRateLimiting("ForOther")]
-        [Route("get_playlist")]
+        [NonAction]
+        [Route("playlist")]
         public async Task<BaseResponse<Media_playlist_for_api>> Get_playlist([FromQuery(Name = "deviceId")] string deviceId)
         {
             
@@ -89,25 +69,25 @@ namespace API.Controllers.Api
             
             return answer;
         }
-
-        [EnableRateLimiting("ForFile")]
         [HttpGet]
+        [EnableRateLimiting("ForFile")]        
         [Route("file")]
-        public async Task<IActionResult> Get_file([FromQuery(Name = "Id")] string fileid)
+        public async Task<BaseResponse<LinkFile>> Get_file([FromQuery(Name = "Id")] string fileid)
         {
             
             Media_file file = await _file.GetFile(fileid);
             if(file == null)
             {
-                return NotFound();
+                return new BaseResponse<LinkFile> {error = "Not found" };
             }
-            var document = await _aws3Services.DownloadFileAsync(file);
+            var document =  _aws3Services.GetLinkMed(file);
             if (document == null)
             {
 
-                return NotFound();
-            }            
-            return File(document.ResponseStream, file.mime_type, file.name);
-        }
+				return new BaseResponse<LinkFile> { error = "Not found" };
+			}
+            var response = new BaseResponse<LinkFile> { data = new LinkFile { URL = document.data } };
+			return response;
+		}
     }
 }

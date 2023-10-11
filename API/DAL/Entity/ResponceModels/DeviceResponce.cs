@@ -30,21 +30,13 @@ namespace API.DAL.Entity.ResponceModels
 
             intervals = device.intervals;
         }
-        public DeviceResponce(List<Device> devices)
+        public static IEnumerable<DeviceResponce> GetListDevice(List<Device> devices)
         {
+            
             foreach (var device in devices)
             {
-                id = device._id;
-
-                name = device.name;
-
-                address = device.adress;
-
-                media_playlist = device.media_play_list;
-
-                ad_playlist = device.ad_playlist;
-
-                intervals = device.intervals;
+                DeviceResponce item = new DeviceResponce(device);                
+                yield return item;
             }
             
         }

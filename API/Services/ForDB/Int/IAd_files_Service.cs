@@ -1,4 +1,5 @@
 ﻿using API.DAL.Entity.Models;
+using System.Runtime.CompilerServices;
 
 namespace API.Services.ForAPI.Int
 {

@@ -38,9 +38,13 @@
 		<div class="param-elem-head">Выбранный плейлист</div>
 		<div class="param-elem-body">
 			<select id="m-PlayList">
-				@if (ViewBag.Plalists.Count != 0)
+				@if (ViewBag.Plalists.Count != 0 || ViewBag.PublicPlaylist.Count != 0)
 				{
 					@foreach (var playlist in ViewBag.Plalists)
+					{
+						<option value="@playlist._id">@playlist.name</option>
+					}
+					@foreach (var playlist in ViewBag.PublicPlaylist)
 					{
 						<option value="@playlist._id">@playlist.name</option>
 					}

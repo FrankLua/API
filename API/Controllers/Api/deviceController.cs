@@ -15,6 +15,7 @@ using API.Services.ForDB.Int;
 
 namespace API.Controllers.Api
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class DeviceController : ControllerBase
@@ -26,9 +27,10 @@ namespace API.Controllers.Api
             Device = _device;
         }
 
-        // GET: api/<DeviceController>
+
+        [HttpGet]
         [EnableRateLimiting("ForOther")]
-        [HttpGet, BasicAuthorization]
+        [BasicAuthorization]
         [Route("")]
         public async Task<BaseResponse<DeviceResponce>> GetDevicebyId([FromQuery(Name = "id")] string id)
         {
@@ -37,6 +39,7 @@ namespace API.Controllers.Api
             return responce;
         }
         [HttpGet]
+        [NonAction]
         [Route("helloy")]
         public ActionResult helloy()
         {

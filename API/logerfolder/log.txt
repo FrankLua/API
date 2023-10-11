@@ -4,48 +4,6 @@
 ============================Start-method=============================
 
 Приложение было запущенно!
- Время запуска: 09/14/2023 15:19:02
+ Время запуска: 10/10/2023 23:09:53
 
-<========================================================>
-
-<========================================================>
-
-NotFound!
-	Application detectid error: 
-Sequence contains no elements
- in time: 09/14/2023 15:19:10
-
-		Data not found here ---> GetDevice
-
-		Search it ---> 64fa9328e3a7691ba9f4c0fc
-
-		Data base ---> Device
-
-			Stack:    at System.Linq.ThrowHelper.ThrowNoElementsException()
-   at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
-   at MongoDB.Driver.IAsyncCursorExtensions.FirstAsync[TDocument](IAsyncCursor`1 cursor, CancellationToken cancellationToken)
-   at API.Services.ForAPI.Rep.Device_Rep.GetDevice(String id) in C:\Users\sosis\source\repos\API\API\Services\ForAPI\Rep\Device_Rep.cs:line 39
-
-NotFound!
-<========================================================>
-
-<========================================================>
-
-NotFound!
-	Application detectid error: 
-Sequence contains no elements
- in time: 09/14/2023 15:19:16
-
-		Data not found here ---> GetDevice
-
-		Search it ---> 64fa9328e3a7691ba9f4c0fc
-
-		Data base ---> Device
-
-			Stack:    at System.Linq.ThrowHelper.ThrowNoElementsException()
-   at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
-   at MongoDB.Driver.IAsyncCursorExtensions.FirstAsync[TDocument](IAsyncCursor`1 cursor, CancellationToken cancellationToken)
-   at API.Services.ForAPI.Rep.Device_Rep.GetDevice(String id) in C:\Users\sosis\source\repos\API\API\Services\ForAPI\Rep\Device_Rep.cs:line 39
-
-NotFound!
 <========================================================>

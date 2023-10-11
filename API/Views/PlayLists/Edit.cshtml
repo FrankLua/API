@@ -16,7 +16,7 @@
     <h2 id ="main"title="@Model._id">@Model.name</h2>
     <input placeholder="Поиск по имени" type="text" id="elastic">       
 </div>
-<div class="lable-page">
+<div class="lable-page" id="lable-page"">
     <table class="main-table-playlist" id="table" title="Med">
         <thead>
             <tr>
@@ -26,43 +26,39 @@
                 <th data-type="string" title="true">
                     Название
                 </th>
+                
                 <th data-type="string" title="true">
                     Тип
-                </th>
-                <th data-type="string" title="true">
-                    Публичность
-                </th>
+                </th>                
             </tr>
         </thead>
         <tbody id="source-list">
-            @if (ViewBag.Enabled_File != null && ViewBag.Disable_File != null)
+            @if (ViewBag.Enabled_File != null && ViewBag.Disable_File != null && ViewBag.PublicFile != null)
             {
-                if (ViewBag.Enabled_File.Count > 0 || ViewBag.Disable_File.Count > 0)
+                if (ViewBag.Enabled_File.Count > 0 || ViewBag.Disable_File.Count > 0 || ViewBag.PublicFile.Count > 0)
                 {
                     @foreach (var item in ViewBag.Enabled_File)
                     {
-                        <tr class="enable_row" title="@item._id/Ad">
+                        <tr class="enable_row" data_Id="@item._id/Med">
                             <td>
-                                <div class="btn-barter-disable" id="btn-barter" title="true"></div>
+                                <div class="btn-barter-disable" id="btn-barter" data_state="true" title="Удалить"></div>
                             </td>
                             <td>
                                 <p id="item">@item.name</p>
                             </td>
                             <td>
                                 <p>@item.mime_type</p>
-                            </td>
-                            <td>
-                                <p>Приватный</p>
-                            </td>
+                            </td>                          
+                            
                         </tr>
                     }
                 
                 
                     @foreach (var item in ViewBag.Disable_File)
                     {
-                        <tr class="disable_row" title="@item._id/Ad">
+                        <tr class="disable_row" data_Id="@item._id/Med">
                             <td>
-                                <div class="btn-barter-enable" id="btn-barter" title="false"></div>
+                                <div class="btn-barter-enable" id="btn-barter" data_state="false" title="Добавить"></div>
                             </td>
                             <td>
                                 <p id="item">@item.name</p>
@@ -70,11 +66,24 @@
                             <td>
                                 <p>@item.mime_type</p>
                             </td>
-                            <td>
-                                <p>Приватный</p>
-                            </td>
+                            
                         </tr>
                     }
+                    @foreach (var item in ViewBag.PublicFile)
+                    {
+                        <tr class="disable_row" data_Id="@item._id/Med">
+                            <td>
+                                <div class="btn-barter-enable" id="btn-barter" data_state="false" title="Добавить"></div>
+                            </td>
+                            <td>
+                                <p id="item">@item.name</p>
+                            </td>
+                            <td>
+                                <p>@item.mime_type</p>
+                            </td>                            
+                        </tr>
+                    }
+
                 }
                 else
                 {

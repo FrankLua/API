@@ -236,7 +236,8 @@ btn_Save.onclick = function () {
                 dataType: 'html',
                 success: function (data) {
                     debugger
-                    $('#device-content').html(data);                  
+                    $('#device-content').html(data);   
+                    alert("Changes is saved");
                     btn_update();
                     //targetElement.remove();
                    
@@ -251,6 +252,7 @@ btn_Save.onclick = function () {
 
             
         },
+        
         error: function () {
             alert("Произошел сбой");
         }

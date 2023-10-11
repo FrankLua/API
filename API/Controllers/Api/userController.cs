@@ -13,6 +13,7 @@ using System.Text;
 
 namespace API.Controllers.Api
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class userController : Controller
@@ -23,8 +24,9 @@ namespace API.Controllers.Api
         {
             _user = userService;
         }
+        [HttpGet]
         [EnableRateLimiting("ForOther")]
-        [HttpGet, BasicAuthorization]
+        [BasicAuthorization]
         [Route("")]
         public async Task<BaseResponse<UserResponce>> GetUserInfo()
         {
@@ -32,8 +34,9 @@ namespace API.Controllers.Api
             var userlogin = User.Identity.Name;
             return await _user.GetUserInfo(userlogin);
         }
+        [HttpGet]
         [EnableRateLimiting("ForOther")]
-        [HttpGet, BasicAuthorization]
+        [BasicAuthorization]
         [Route("devices")]
         public async Task<BaseResponse<DataResponce>> GetUserDevice()
         {

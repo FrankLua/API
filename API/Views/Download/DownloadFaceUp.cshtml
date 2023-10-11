@@ -1,0 +1,54 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+
+
+
+
+<table class="main-table" id="table-file">
+
+	<thead>
+		<tr>
+			<th data-type="string" title="true">Имя файла</th>
+			<th data-type="string" title="true">Формат</th>
+			<th data-type="string" title="true">Тип</th>
+			<th data-type="string" title="true">Действия</th>
+		</tr>
+
+	</thead>
+	@if (ViewBag.Med != null)
+	{
+		@foreach (var item in ViewBag.Med)
+		{
+			<tbody>
+				<tr id="@item._id">
+					<td id="item">@item.name</td>
+					<td>Медиа файл</td>
+					<td>@item.mime_type</td>
+					<td><button id="button" value="@item._id/Med">Удалить</button></td>
+				</tr>
+			</tbody>
+
+		}
+	}
+	@if (ViewBag.Ad != null)
+	{
+		@foreach (var item in ViewBag.Ad)
+		{
+			<tbody>
+				<tr id="@item._id">
+					<td id="item">@item.name</td>
+					<td>Рекламный файл</td>
+					<td>@item.mime_type</td>
+					<td><button id="button" value="@item._id/Ad">Удалить</button></td>
+				</tr>
+			</tbody>
+
+		}
+	}
+
+</table>

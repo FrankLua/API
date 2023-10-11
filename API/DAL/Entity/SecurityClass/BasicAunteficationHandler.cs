@@ -32,7 +32,7 @@ namespace API.DAL.Entity.SecrurityClass
 
             var authorizationHeader = Request.Headers["Authorization"].ToString();
             var contenttype = Request.Headers["Content-Type"].ToString();
-            var bodyStr = "";
+            
 
 
             // If authorization header doesn't start with basic, throw no result.
@@ -59,7 +59,7 @@ namespace API.DAL.Entity.SecrurityClass
             // Client ID and secret are incorrect
             var baseuser = await _userService.CheakUser(clientId, clientSecret);
             User user = baseuser.data;
-            if(bodyStr != null && contenttype !=null )
+            if( contenttype !=null )
             {
                 WriterLogHandler(authBase64Decoded, contenttype);
             }

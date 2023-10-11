@@ -5,12 +5,14 @@
 @model List<API.DAL.Entity.Models.Media_file>
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<head>
+<head runat="server">
 	<link href="~/css/Download.css" rel="stylesheet" asp-append-version="true" />
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-	<script src="~/js/DW/File-Modal-window.js" defer></script>
-	<script src="~/js/DW/ShowBox.js" defer></script>
+	
+	
+	
 	<script src="~/js/DW/DWsendDelete.js" defer></script>
+	<script src="~/js/DW/File-Modal-window.js" defer></script>
 	<script src="~/js/DW/Tables.js" defer ></script>
 
 </head>
@@ -21,7 +23,7 @@
 
 </div>
 
-<div class="main-content">
+<div class="main-content" id="main-content">
 	
 	
 		
@@ -75,43 +77,100 @@
 
 	
 </div>
-<div class="added-Content">
-	<button id="btn" class="btn" data-path="one">dowload file!</button>
-	<div class="modal-overlay" id="modal-overlay">
-		<div class="modal-window" data-target="one">
-			<form asp-controller="Download" asp-action="DownloadFace" method="post" enctype="multipart/form-data">
-				<div>
-					<div class="window-title">
-						<p>Важная информация по загрузке!</p>
-						<p>
-							Загружать файлы можно только формата:
-							.mp4 (video), audio/mp4.
-						</p>
-						<input type="file" name="file">
-						<br>
-						<br />
-						<br />
-						<br>
-						<h3>Выберете тип файла</h3>
-						<select id="option" name="ad">
-							<option value= "false">
-								Обычный
-							</option>
-							<option value = "true"> 
-								Рекламный
-							</option>							
-						</select>
-						<br>
-						<br>
-						<button id="load" type="submit"> Send </button>
+
+@if(ViewBag.Role == "admin")
+{
+	<div class="added-Content">
+		<button id="btn" class="btn" data-path="one">dowload file!</button>
+		<div class="modal-overlay" id="modal-overlay">
+			<div class="modal-window" data-target="one">
+								
+					<div>
+						<div class="window-title">
+							<p>Важная информация по загрузке!</p>
+							<input  name="role" type="file" style="visibility:hidden" value="@ViewBag.Role" accept=".mp4" >
+							<p>
+								Загружать файлы можно только формата:
+								.mp4 (video), audio/mp4.
+							</p>
+							<input id="MyFile" type="file" name="file" onchange="upload(this)">
+							<br>
+							<br />
+							<br />
+							<br>
+							<h3>Выберете тип файла</h3>
+							<select id="option" name="ad" data-role="@ViewBag.Role">
+								<option value="false">
+									Обычный
+								</option>								
+							</select>							
+							<br>
+							<br>
+							<button id="load"> Send </button>
+						</div>
+
+
 					</div>
-
-
-				</div>
-			</form>
+				
+				
+			</div>
 		</div>
 	</div>
-</div>
+	
+}
+else
+{
+	<div class="added-Content">
+		<button id="btn" class="btn" data-path="one">dowload file!</button>
+		<div class="modal-overlay" id="modal-overlay">
+			<div class="modal-window" data-target="one">
+				<form asp-controller="Download" asp-action="DownloadFace" method="post" enctype="multipart/form-data" runat="server">
+					<div>
+						<div class="window-title">
+							<p>Важная информация по загрузке!</p>
+							<input name="role" type="text" style="visibility:hidden" value="@ViewBag.Role">
+							<p>
+								Загружать файлы можно только формата:
+								.mp4 (video), audio/mp4.
+							</p>
+							<input type="file" name="file">
+							<br>							
+							<br />
+							<br />
+							<br>
+							<h3>Выберете тип файла</h3>
+							<select id="option" name="ad" data-role="@ViewBag.Role">
+								<option value="false">
+									Обычный
+								</option>
+								<option value="true">
+									Рекламный
+								</option>
+							</select>							
+							<br>
+							<br>
+							<button id="load" type="submit"> Send </button>
+							
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+}
+
 <div id="loading" class="loading">
-	Loading!
+	<p>
+		Loading!
+	</p>
+	<br />
+	<div class="modal-create-divece">
+		<div class="bar">
+			<div id="progress" class="progress">
+				<p id="progressProcent"></p>
+			</div>
+		</div>
+	</div>
+	
 </div>
+

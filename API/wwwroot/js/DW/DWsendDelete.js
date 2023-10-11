@@ -1,11 +1,8 @@
 const table = document.getElementById('table');
 window.onload = function () {
-    function strPad() {
-        debugger
-        console.log(this.value)
+    function strPad() {        
         const valuE = this.value.split('/')[0];
-        const type = this.value.split('/')[1];
-        
+        const type = this.value.split('/')[1];      
         
         load();
         $.ajax({
@@ -15,16 +12,14 @@ window.onload = function () {
             success: function (data) {
                 if (data.error != null) {
                     loadoff()
-                    const str = data.error;
-                    showbox(str);
+                    const str = data.error;                    
                 }
                 else {
                     loadoff()
                     const tbody = document.getElementById(valuE);
                     
                     tbody.parentNode.removeChild(tbody);
-                    const str = data.data
-                    showbox(str);                    
+                    const str = data.data                                   
                 }
             },
             error: function () {

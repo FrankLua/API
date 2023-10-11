@@ -8,6 +8,7 @@ using Amazon.S3.Model;
 using MongoDB.Driver.Core.Misc;
 using System.Linq;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace API.Controllers.Web
 {
@@ -37,8 +38,15 @@ namespace API.Controllers.Web
 
 			var mediaPlaylist = await _media_playlist.GetPlayListUser(User.Identity.Name);
 			var adPlaylist = await _ad_playlist.GetPlayListUser(User.Identity.Name);
+
+
+
+			ViewBag.Role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
 			ViewBag.Ad = adPlaylist;
 			ViewBag.Media = mediaPlaylist;
+
+
+
 			return View();
 		}
 		[Route("Web/PlayLists/PlaylistsFace/Update")]
@@ -48,13 +56,16 @@ namespace API.Controllers.Web
 		{
 			var mediaPlaylist = await _media_playlist.GetPlayListUser(User.Identity.Name);
 			var adPlaylist = await _ad_playlist.GetPlayListUser(User.Identity.Name);
-			ViewBag.Ad = adPlaylist;
+
+
+            ViewBag.Role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
+            ViewBag.Ad = adPlaylist;
 			ViewBag.Media = mediaPlaylist;
 			return View();
 		}
 		[Route("Web/PlayLists/PlaylistsFace/DeleteAd")]
-		[Authorize]
-		[HttpDelete]
+        [Authorize(Roles = "user")]
+        [HttpDelete]
 		public async Task<bool> DeleteAd(string id)
 		{
 			await _ad_playlist.DeletePlaylist(User.Identity.Name, id);
@@ -73,7 +84,7 @@ namespace API.Controllers.Web
 		[Route("Web/PlayLists/PlaylistsFace/CreatePlaylist")]
 		[HttpPost]
 		[Authorize]
-		public async Task<bool> CreatePlaylist(string name, bool type)
+		public async Task<bool> CreatePlaylist(string name, bool type ,string role)
 		{
 			if(type == true)
 			{
@@ -85,9 +96,9 @@ namespace API.Controllers.Web
 			}
 			else
 			{
-				var playList = new Media_playlist();
-				playList.name = name;
-				await _media_playlist.AddPlaylist(User.Identity.Name,playList);
+
+				
+				await _media_playlist.AddPlaylist(User.Identity.Name,role,name);
 				return true;
 			}			
 		}
@@ -97,23 +108,31 @@ namespace API.Controllers.Web
 		[Authorize]
 		public async Task<IActionResult> Edit([FromQuery(Name = "Id")] string fileid)
 		{
-			var playlist = await _media_playlist.GetMediaPlaylist(fileid);
-			
+			var role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
+            var playlist = await _media_playlist.GetMediaPlaylist(fileid);
+			var publicFiles = await _media_file.GetPublicFiles();
 			List<Media_file> playlist_file = await _media_file.GetFiles(playlist.data.media_files_id);
 			List<Media_file> files = await _media_file.GetFiles(await _user.GetUserFilesId(User.Identity.Name));
 
 			files = files.Except(playlist_file).ToList();
+			publicFiles = publicFiles.Except(playlist_file).ToList();
+			if(role == "admin")
+			{
+				publicFiles = publicFiles.Except(files).ToList();
+			}
 
 
 
-            ViewBag.Disable_File = files ;
+			ViewBag.Role = role;
+            ViewBag.PublicFile = publicFiles;
+			ViewBag.Disable_File = files ;
             ViewBag.Enabled_File = playlist_file;
 			return View(playlist.data);
 		}
 		[Route("Web/PlayLists/EditAd")]
 		[HttpGet]
-		[Authorize]
-		public async Task<IActionResult> EditAd([FromQuery(Name = "Id")] string fileid)
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> EditAd([FromQuery(Name = "Id")] string fileid)
 		{
 			var userlist = await _user.GetUserAdFilesId(User.Identity.Name);
 			var playlist = await _ad_playlist.GetPlaylistAsyncbyId(fileid);
@@ -124,8 +143,8 @@ namespace API.Controllers.Web
 			user_list = user_list.Except(playlist_file).ToList();
 
 
-
-			ViewBag.Disable_File = user_list;
+            ViewBag.Role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
+            ViewBag.Disable_File = user_list;
 			ViewBag.Enabled_File = playlist_file;
 			return View(playlist.data);
 		}
@@ -140,7 +159,7 @@ namespace API.Controllers.Web
 		}
         [Route("Web/PlayLists/Edit/EditAdPL")]
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "user")]
         public async Task<bool> EditAdPL(string playlistJson)
         {
 			var newPlaylist = JsonConvert.DeserializeObject<Media_Ad_playlist>(playlistJson);
@@ -152,15 +171,24 @@ namespace API.Controllers.Web
         [Authorize]
         public async Task<IActionResult> EditUpdate([FromQuery(Name = "Id")] string id)
 		{
+            var role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
             var playlist = await _media_playlist.GetMediaPlaylist(id);
-
+            var publicFiles = await _media_file.GetPublicFiles();
             List<Media_file> playlist_file = await _media_file.GetFiles(playlist.data.media_files_id);
             List<Media_file> files = await _media_file.GetFiles(await _user.GetUserFilesId(User.Identity.Name));
 
             files = files.Except(playlist_file).ToList();
+            publicFiles = publicFiles.Except(playlist_file).ToList();
+            if (role == "admin")
+            {
+                publicFiles = publicFiles.Except(files).ToList();
+            }
+            
 
+			publicFiles = publicFiles.Except(playlist_file).ToList();
 
-
+            ViewBag.Role = role;
+            ViewBag.PublicFile = publicFiles;
             ViewBag.Disable_File = files;
             ViewBag.Enabled_File = playlist_file;
 
@@ -169,7 +197,7 @@ namespace API.Controllers.Web
         }
         [Route("Web/PlayLists/Edit/EditUpdateAd")]
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> EditUpdateAd([FromQuery(Name = "Id")] string id)
         {
             var userlist = await _user.GetUserAdFilesId(User.Identity.Name);
@@ -181,7 +209,7 @@ namespace API.Controllers.Web
             user_list = user_list.Except(playlist_file).ToList();
 
 
-
+            ViewBag.Role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
             ViewBag.Disable_File = user_list;
             ViewBag.Enabled_File = playlist_file;
             return View(playlist.data);

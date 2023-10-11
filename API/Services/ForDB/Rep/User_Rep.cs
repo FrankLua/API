@@ -149,11 +149,10 @@ namespace API.Services.ForAPI.Rep
 
                 if (list != null && user.devices != null)
                 {
-                    answer.data = new DataResponce();
-                    List<DeviceResponce> userdevice = new List<DeviceResponce>();
-                    DeviceResponce deviceResponce = new DeviceResponce(list);
-                    userdevice.Add(deviceResponce);
-                    answer.data.devices = userdevice;
+                    answer.data = new DataResponce();                    
+                     
+                    
+                    answer.data.devices = DeviceResponce.GetListDevice(list).ToList();
 
                 }
 

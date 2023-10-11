@@ -65,16 +65,31 @@ namespace API.DAL.Entity.Models
 	}
 	public struct ad_files
 	{
-		public ad_files(string file, string start_time)
+		public ad_files(string file, string  start_time, string interval)
 		{
-			this.file = file;
-			this.start_time = start_time;
+			if(interval == "")
+			{
+                this.file = file;
+                this.start_time = start_time;
+                this.interval = null;
+			}
+			else
+			{
+                this.file = file;
+                this.start_time = start_time;
+                this.interval = interval;
+            }
+			
+			
 		}
 		[BsonElement("file")]
 		[JsonPropertyName("id")]
 		public string file { get; set; }
 		[BsonElement("time")]
-		public string start_time { get; set; }
+		public string  start_time { get; set; }
+
+		[BsonElement("interval")]
+		public string interval { get; set; }
 
 	}
 

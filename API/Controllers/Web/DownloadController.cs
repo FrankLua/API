@@ -11,25 +11,38 @@ using API.Services.ForS3.Rep;
 using static API.DAL.Entity.SupportClass.MimeType;
 using System;
 using API.Services.ForDB.Int;
+using System.Security.Claims;
+using StackExchange.Redis;
+using Microsoft.AspNetCore.SignalR;
+using static System.Net.WebRequestMethods;
+using System.Text;
+using Amazon.Runtime.Internal.Util;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace API.Controllers.Web
 {
     public class DownloadController : Controller
 	{
-
+		
 		private readonly IAppConfiguration _appConfiguration;
 		private readonly IAws3Services _aws3Services;
 		private readonly IMedia_File_Service _media_file;
 		private readonly IAd_files_Service _ad_file;
 		private readonly IUser_Service _user;
-
-		public DownloadController(IDevice_Service device,IAppConfiguration appConfiguration,IMedia_File_Service media_file, IUser_Service user_Service, IAd_files_Service ad_file)
+		IMemoryCache _cache;
+        
+		private Dictionary<string, string> _loadings = new Dictionary<string, string>();
+        
+        public DownloadController( IMemoryCache cache, IDevice_Service device,IAppConfiguration appConfiguration,IMedia_File_Service media_file, IUser_Service user_Service, IAd_files_Service ad_file)
 		{
-			_appConfiguration = appConfiguration;
-			_aws3Services = new Aws3Services(_appConfiguration.AwsAccessKey, _appConfiguration.AwsSecretAccessKey, _appConfiguration.BucketName, _appConfiguration.URL);
+            
+            _appConfiguration = appConfiguration;
+			
 			_user = user_Service;
 			_media_file = media_file;
 			_ad_file = ad_file;
+			_cache = cache;
+			_aws3Services = new Aws3Services(_cache, _appConfiguration.AwsAccessKey, _appConfiguration.AwsSecretAccessKey, _appConfiguration.BucketName, _appConfiguration.URL);
 		}
 		[Route("Web/Download/DownloadFace")]
 		[HttpGet]
@@ -44,13 +57,36 @@ namespace API.Controllers.Web
 			var media_list = await _media_file.GetFiles(playlistlistMed);
 			
 			var ad_list = await _ad_file.Getfiles(playlistlistAd);
-				
 
-			ViewBag.Med = media_list;
+            
+            ViewBag.Role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
+            ViewBag.Med = media_list;
 			ViewBag.Ad = ad_list;
 		    return View();
 			
 			
+		}
+		[Route("Web/Download/DownloadFaceUp")]
+		[HttpGet]
+		[Authorize]
+		public async Task<IActionResult> DownloadFaceUp()
+		{
+			var playlistlistMed = await _user.GetUserFilesId(User.Identity.Name);
+
+			var playlistlistAd = await _user.GetUserAdFilesId(User.Identity.Name);
+
+
+			var media_list = await _media_file.GetFiles(playlistlistMed);
+
+			var ad_list = await _ad_file.Getfiles(playlistlistAd);
+
+
+			
+			ViewBag.Med = media_list;
+			ViewBag.Ad = ad_list;
+			return View();
+
+
 		}
 		[Route("Web/Download/Delete")]
 		[HttpPost]
@@ -95,11 +131,12 @@ namespace API.Controllers.Web
 		[HttpPost]
 		[DisableRequestSizeLimit]
 		[Authorize]
-		public async Task< IActionResult> DownloadFace(IFormFile file, [FromServices] Microsoft.Extensions.Hosting.IHostingEnvironment hostingEnvironment, bool ad)
-		{
+		public async Task< IActionResult> DownloadFace(bool ad, string role, string loadId,IFormFile file)
+		{	
+					
 			
-			
-			if (file != null)
+			ViewBag.Role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;			
+            if (file != null)
 			{
 				if (CheakMimetype(file.ContentType)&& await _aws3Services.CheackFileAsync(GetFolderName(file.ContentType,ad), file.FileName))
 				{
@@ -109,14 +146,14 @@ namespace API.Controllers.Web
 						var newfile = await _ad_file.AddFile(file, User.Identity.Name);
 						newfile.folder = GetFolderName(file.ContentType, ad);
 						
-						await _aws3Services.UploadFileAsync(file, ad);
+						await _aws3Services.UploadFileAsync(file, ad,loadId);
 						return RedirectPermanent("~/Web/Download/DownloadFace");
 					}
 					else
 					{
-						var newfile = await _media_file.AddFile(file, User.Identity.Name);
+						var newfile = await _media_file.AddFile(file, User.Identity.Name,role);
 						newfile.folder = GetFolderName(file.ContentType, ad);
-						await _aws3Services.UploadFileAsync(file, ad);
+						await _aws3Services.UploadFileAsync(file, ad, loadId);
 						return RedirectPermanent("~/Web/Download/DownloadFace");
 					}
 
@@ -136,7 +173,59 @@ namespace API.Controllers.Web
 			}
 			
 		}
-		
+		[HttpGet]
+		[DisableRequestSizeLimit]
+		[Route("Web/Download/Upload")]
+        public  async Task Upload([FromQuery(Name = "Id")] string id)
+		{
+			
+			_cache.TryGetValue("Loader", out Dictionary<string, string>? _loadings);
+			if(_loadings == null)
+			{
+				_loadings = new Dictionary<string, string>();
+				_cache.Set("Loader", _loadings);
+			}			
+			if (_loadings.ContainsKey(id)){
+				
+				
+				
+					Response.Headers.Add("Content-Type", "text/event-stream");
+					await Response
+						.WriteAsync($"data: {_loadings[id]}\n\n");
+				
+				
+			}
+			else
+			{
+				_loadings.Add(id, "0/0");
+				Response.Headers.Add("Content-Type", "text/event-stream");
+				await Response
+					.WriteAsync($"data: {_loadings[id]}\n\n");
+			}
+
+
+		}
+		[HttpPost]
+		[DisableRequestSizeLimit]
+		[Route("Web/Download/DeleteIdLodear")]
+		public async Task DeleteIdLodear(string id)
+		{
+
+			_cache.TryGetValue("Loader", out Dictionary<string, string>? _loadings);
+			if (_loadings == null)
+			{
+				_loadings = new Dictionary<string, string>();
+				_cache.Set("Loader", _loadings);
+			}
+			if (_loadings.ContainsKey(id))
+			{
+				_loadings.Remove(id);
+			}	
+
+
+		}
+
+
 	}
 
 }

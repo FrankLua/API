@@ -19,6 +19,8 @@ using System.IO.Compression;
 using Microsoft.CodeAnalysis;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Http.Features;
+using static API.Controllers.Web.DownloadController;
+
 
 namespace API
 {
@@ -41,22 +43,22 @@ namespace API
 
 
                 service.Configure<FormOptions>(opt => { opt.MultipartBodyLengthLimit = 600 * 1024 * 1024; });
+				
 
+				// ��������� ������� ������
 
-                // ��������� ������� ������
-
-                //service.Configure<GzipCompressionProviderOptions>(options => options.Level = System.IO.Compression.CompressionLevel.Fastest);
-                //service.AddResponseCompression(options =>
-                //{
-                //    options.Providers.Add<GzipCompressionProvider>();
-                //    options.EnableForHttps = true;
-                //    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" });
-                //});
+				service.Configure<GzipCompressionProviderOptions>(options => options.Level = System.IO.Compression.CompressionLevel.Fastest);
+                service.AddResponseCompression(options =>
+                {
+                    options.Providers.Add<GzipCompressionProvider>();
+                    options.EnableForHttps = true;
+                    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" });
+                });
 
 
                 // ���������� �����������
                 builder.Services.AddMemoryCache();
-
+                
 
                 service.AddScoped<IAPIDatabaseSettings>(sp =>
                     sp.GetRequiredService<IOptions<APIDatabaseSettings>>().Value);
@@ -65,13 +67,14 @@ namespace API
                 service.AddScoped<IAppConfiguration, AppConfiguration>();
                 // Add services to the container.
                 ScopeBuilder.InitializerServices(service);
-                //service.AddControllers();
+                service.AddControllers();
                 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
                 service.AddEndpointsApiExplorer();
                 service.AddSwaggerGen();
                 service.AddAuthentication()
                     .AddScheme<AuthenticationSchemeOptions, BasicAunteficationHandler>("Basic", null);
                 service.AddControllersWithViews();
+                
                 service.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                     .AddCookie(options => //CookieAuthenticationOptions
                     {
@@ -91,8 +94,8 @@ namespace API
                 app.UseHttpsRedirection();
                 app.UseAuthorization();
 
-
-                app.MapControllers();
+				
+				app.MapControllers();
                 //app.UseRateLimiter();
                 app.UseRouting();
                 app.UseAuthentication(); // ��������������
@@ -121,15 +124,17 @@ namespace API
                         await context.Response.WriteAsync("You are going too far (Page not found 404)");
                     }
                 });
-                app.UseEndpoints(endpoints =>
+				
+				app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapGet("/", async context => { context.Response.Redirect("/Web/Log/Login"); });
                 });
+				
 
-                // app.UseResponseCompression(); // ���������� ������
+				// app.UseResponseCompression(); // ���������� ������
 
 
-                app.Run();
+				app.Run();
             }
             catch (Exception ex)
             {

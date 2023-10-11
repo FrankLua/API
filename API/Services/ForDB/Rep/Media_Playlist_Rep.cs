@@ -9,6 +9,8 @@ using System.Text.Json.Nodes;
 using System.Text.Json;
 using Amazon.Runtime.Internal.Util;
 using Microsoft.Extensions.Caching.Memory;
+using StackExchange.Redis;
+using System.Xml.Linq;
 
 namespace API.Services.ForAPI.Rep
 {
@@ -28,9 +30,16 @@ namespace API.Services.ForAPI.Rep
 			_cache = memoryCache;
         }
 
-        public async Task<string> AddPlaylist(string login, Media_playlist newplaylist)
+        public async Task<bool> AddPlaylist(string login, string role, string name)
         {
-            newplaylist._id = ObjectId.GenerateNewId();
+			var newplaylist = new Media_playlist();
+			newplaylist.name = name;
+			switch (role)
+			{
+				case "admin": newplaylist.is_public = true; break;
+				case "user": newplaylist.is_public = false; break;
+			}
+			newplaylist._id = ObjectId.GenerateNewId();
 
             try
             {
@@ -39,13 +48,14 @@ namespace API.Services.ForAPI.Rep
                 await _user.UpdateOneAsync(Builders<User>.Filter.Eq("login", $"{login}"), Builders<User>.Update.Push("media-playlist", newplaylist._id.ToString()));
 				_cache.Set(newplaylist._id.ToString(), newplaylist, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
 				_cache.Remove(login);
-				return "OK";
+				return true;
 
             }
 
             catch (Exception ex)
             {
-                return ex.Message;
+                Loger.Exception(ex, "AddPlaylist");
+                return false;
             }
         }
 
@@ -226,5 +236,31 @@ namespace API.Services.ForAPI.Rep
 
 
         }
-    }
+		public async Task<List<Media_playlist>> GetPublicPlayList()
+		{
+			try
+			{
+                var list = _media_playlist
+                    .FindAsync(p => p.is_public == true)
+                    .Result
+                    .ToList();
+                    
+				return list;
+
+			}
+			catch (InvalidOperationException ex)
+			{
+				string[] par = new string[] { "Media_playlist" };
+				Loger.ExceptionForNotFound(ex, method: "PublicPlaylist", "---", par);
+				return null;
+			}
+			catch (Exception ex)
+			{
+				Loger.Exception(ex, "GetPlayLIstUser");
+				return null;
+			}
+
+
+		}
+	}
 }

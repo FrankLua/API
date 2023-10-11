@@ -33,7 +33,8 @@ function btn_Delete_Update() {
                         dataType: 'html',
                         success: function (data) {
 
-                            $('#playlist-content').html(data);                          
+                            $('#playlist-content').html(data); 
+                            alert("the playlist was delete");
                             btn_Delete_Update();
 
                         }
@@ -62,14 +63,15 @@ function btn_Delete_Update() {
 btn_Save.onclick = function () {
     debugger
     const name = document.querySelector('#playlist-name').value;    
-    const type = document.querySelector('#playlist-type').value; 
+    const type = document.querySelector('#playlist-type').value;
+    const role = document.querySelector('#playlist-type').getAttribute('data-role')
 
     let mock1 = true;    
     if (name != "") {
         $.ajax({
             url: '/Web/PlayLists/PlaylistsFace/CreatePlaylist',
             type: "POST",
-            data: { name: name, type: type },
+            data: { name: name, type: type, role: role},
 
 
             success: function (data) {
@@ -78,12 +80,12 @@ btn_Save.onclick = function () {
                     url: `/Web/PlayLists/PlaylistsFace/Update`,
                     dataType: 'html',
                     success: function (data) {
-
+                        
                         $('#playlist-content').html(data);
 
                         overlay.style.opacity = 0;
                         overlay.style.visibility = 'hidden';
-
+                        alert("Playlist was create")
                         btn_Delete_Update();
                     }
                 })

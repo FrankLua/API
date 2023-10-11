@@ -9,9 +9,9 @@ namespace API.Services.ForAPI.Int
 
 
         Task<List<Media_file>> GetFiles(List<string> ids);
+		Task<List<Media_file>> GetPublicFiles();
 
-
-        Task<Media_file> AddFile(IFormFile file, string login);
+		Task<Media_file> AddFile(IFormFile file, string login, string role);
 
         Task<string> DeleteFile(string id, string login);
     }

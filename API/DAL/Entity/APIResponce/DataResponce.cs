@@ -11,8 +11,8 @@ namespace API.DAL.Entity.APIResponce
 
 		public DataResponce()
         {
-            
-            devices = null;
+
+            devices = new List<DeviceResponce>();
 
         }
 		

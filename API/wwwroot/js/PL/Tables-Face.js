@@ -28,7 +28,7 @@ btn_save.onclick = function () { //Функция для кнопки сохранить
     let url1;
     let url2;
     let answer = [];
-    
+    let timeInputs = true;
     
     
     if (type == "Ad") {
@@ -36,32 +36,50 @@ btn_save.onclick = function () { //Функция для кнопки сохранить
         url2 = `/Web/PlayLists/Edit/EditUpdateAd?Id=${main_id}`;
         let intervals = []; // переменная для интервалов (проверок над ними)
         let correctly = true; // переменная для отслеживания всё ли корректно заполненр
+        debugger
         rowsArray.forEach((row) => {
             let state_btn = row.cells[0]
                 .getElementsByTagName("div")[0]
-                .title
-
+                .getAttribute("data_state")
+            let id = row.getAttribute("data_Id").split('/')[0]
+            let time = row.querySelector("#time").value
+            let interval = row.querySelector("#interval").value
+            let inputeState = row.querySelector("#textInpute").innerText;
+            let intervalState = row.querySelector("#textInterval").innerText;
+            let cheakBox = row.querySelector("#checkBox")
             if (state_btn == "true") {
-                let id = row.title.split('/')[0];
-                let time = row.cells[4].children[0].value;
-                if (time.length != 5) {
-                    alert("You did not correctly write time")
-                    correctly = false;
-                    return;
-                }
-                
-                let interval = new ad_files(id, time);
-                
-                
-                intervals.push(interval);
-            }
+                if (cheakBox.checked) {
+                    if ( inputeState != "Bad" && intervalState != "Bad") {
 
-        });
-        
-        boolintevals = searchBadIntervals(intervals);        
-        let playlist = JSON.stringify(new Media_Ad_playlist(main_id, document.querySelector('#main').dataset.name, intervals));       
+                        let playlist = new ad_files(id, time, interval)
+                        answer.push(playlist)
+
+                    }
+                    else {
+                        alert("You don't correctly write date")
+                        timeInputs = false;
+                        return
+                    }
+                }
+                else {
+                    if ( inputeState != "Bad") {
+                        
+                        let playlist = new ad_files(id, time, null)
+                        answer.push(playlist)
+
+                    }
+                    else {
+                        alert("You don't correctly write date")
+                        timeInputs = false;
+                        return
+                    }
+                }
+            }          
+
+        });              
+        let playlist = JSON.stringify(new Media_Ad_playlist(main_id, document.querySelector('#main').dataset.name, answer));       
         debugger
-        if (correctly & boolintevals) {
+        if (correctly && timeInputs) {
             $.ajax({
                 type: 'POST',
                 url: url1,
@@ -76,14 +94,13 @@ btn_save.onclick = function () { //Функция для кнопки сохранить
                             url: url2,
                             dataType: 'html',
                             success: function (data) {
-                                debugger
-                                document.querySelector('#lable-page').innerHTML = data;
                                 
-                                alert("Changes is saved");
-                                startTimeBTN();
+                                document.querySelector('#lable-page').innerHTML = data;                                
+                                alert("Changes is saved");                                
                                 btn_update();
-                                debugger
-
+                                cheakTime();                                
+                                tableSort()
+                                
 
                             }
                         })
@@ -104,14 +121,14 @@ btn_save.onclick = function () { //Функция для кнопки сохранить
         
     }
     else {
+        debugger
         rowsArray.forEach((row) => {
             let state_btn = row.cells[0]
                 .getElementsByTagName("div")[0]
-                .title
+                .getAttribute("data_state")
 
             if (state_btn == "true") {
-                answer.push(row.title.split('/')[0]);
-
+                answer.push(row.getAttribute("data_Id").split('/')[0]);                
             }
 
         });
@@ -124,22 +141,17 @@ btn_save.onclick = function () { //Функция для кнопки сохранить
             success: function (data) {
                 if (data == true) {
 
-                    var targetElementTitle = document.querySelector(".content");
-
-                    //targetElement.load(`/Web/PlayLists/Edit/EditUpdate/?Id=${main_id} .content`);
+                    var targetElementTitle = document.querySelector(".content");                    
                     $.ajax({
                         url: url2,
                         dataType: 'html',
                         success: function (data) {
-                            debugger
-                            var kel = document.querySelector('.lable-page').innerHTML;
+                            
+                            var kel = document.querySelector('#lable-page');
                             kel.innerHTML = data;
-                            alert("Changes is saved");
-                            //$('#lable-page').innerHTML = data;
-
-
-                            //targetElement.remove();
-                            debugger
+                            alert("Changes is saved");                        
+                            btn_update();                            
+                            tableSort()                        
 
 
                         }
@@ -159,23 +171,26 @@ btn_save.onclick = function () { //Функция для кнопки сохранить
 }
 
 
-
-table.onclick = function (e) {
-    console.log(e.target.tagName)
-    if (e.target.tagName != 'TH') {
-        return;
-    }
-    let th = e.target
-    debugger
-    if (th.title == "true") {
-        sortTablUp(th.cellIndex, th.dataset.type);
-        th.title = "false"
-    }
-    else {
-        sortTablDown(th.cellIndex, th.dataset.type);
-        th.title = "true"
+tableSort()
+function tableSort() {
+    document.querySelector(".main-table-playlist").onclick = function (e) {
+        console.log(e.target.tagName)
+        if (e.target.tagName != 'TH') {
+            return;
+        }
+        let th = e.target
+        debugger
+        if (th.title == "true") {
+            sortTablUp(th.cellIndex, th.dataset.type);
+            th.title = "false"
+        }
+        else {
+            sortTablDown(th.cellIndex, th.dataset.type);
+            th.title = "true"
+        }
     }
 }
+
 
 
 
@@ -217,9 +232,11 @@ class Media_Ad_playlist {
 }
 
 class ad_files {
-    constructor(file, start) {
+    constructor(file, start, interval) {
+        debugger
         this.file = file,
             this.start_time = start
+        this.interval = interval
     }
 }
 
@@ -247,32 +264,72 @@ function btn_update() { //Добавление функции для всех кнопок бартеров
 
 function barter_btn_func(el) { //Функция для кнопок "бартеров" да-нет
     debugger
-    const value = el.title
-    if (value == "true") {
-        
-        el.classList = "btn-barter-enable";
-        el.title = "false";
-        debugger
-        var th = el.parentElement.parentElement;
-        th.classList = "";
-        th.classList = "disable_row";
+    const value = el.getAttribute("data_state");
+    let typeP = el.parentElement.parentElement.getAttribute("data_Id").split('/')[1];
+    if (typeP == "Med") {
+        if (value == "true") {
+            el.classList = "btn-barter-enable";
+            el.setAttribute('data_state', "false");
+            debugger
+            var th = el.parentElement.parentElement;
+            th.classList = "";
+            th.classList = "disable_row";
+        }
+        else {
+            el.classList = "btn-barter-disable";
+            el.setAttribute('data_state', "true");
+            debugger
+            var th = el.parentElement.parentElement;
+            th.classList = "";
+            th.classList = "enable_row";
+            debugger
+        }
     }
     else {
-
-        el.classList = "btn-barter-disable";
-        el.title = "true";
-        debugger
-        var th = el.parentElement.parentElement;
-        th.classList = "";
-        th.classList = "enable_row";
+        if (value == "true") {
+            el.classList = "btn-barter-enable";
+            el.setAttribute('data_state', "false");            
+            var th = el.parentElement.parentElement;
+            var inputeTime = th.querySelector("#time");
+            var checkBox = th.querySelector("#checkBox");
+            var inputeInterval = th.querySelector("#interval")
+            checkBox.disabled = true;
+            inputeTime.disabled = true;           
+            if (checkBox.checked) {                
+                checkBox.checked = false;
+                inputeInterval.value = "";
+                inputeInterval.disabled = true;
+            }
+            th.classList = "";
+            th.classList = "disable_row";
+            getActualStatus()
+        }
+        else {
+            el.classList = "btn-barter-disable";
+            el.setAttribute('data_state', "true");
+            var th = el.parentElement.parentElement;
+            var inputeTime = th.querySelector("#time");
+            var checkBox = th.querySelector("#checkBox");
+            
+            
+            checkBox.disabled = false;
+            inputeTime.disabled = false;
+            th.classList = "";
+            th.classList = "enable_row";            
+            getActualStatus()
+        }
     }
+    
 
 
 
 }
 function sortTablDown(colNum, type) {  // сортировка 
     debugger
-    let tbody = table.querySelector('tbody');
+    let table = document
+        .querySelector(".main-table-playlist");
+    let tbody = table
+        .querySelector('tbody');
     let rowsArray = Array.from(table.rows)
         .slice(1);
     let compare; //переменная для функции
@@ -318,9 +375,13 @@ function sortTablDown(colNum, type) {  // сортировка
 }
 function sortTablUp(colNum, type) {
     
-    let tbody = table.querySelector('tbody');
+    let table = document
+        .querySelector(".main-table-playlist");
+    let tbody = table
+        .querySelector('tbody');
     let rowsArray = Array.from(table.rows)
         .slice(1);
+    
     let compare; //переменная для функции
 
     if (colNum == 0) {

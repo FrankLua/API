@@ -13,50 +13,58 @@ using API.Services.ForS3.Int;
 using API.Services.ForS3.Rep;
 using Microsoft.AspNetCore.RateLimiting;
 using API.Services.ForDB.Int;
+using System.Text;
+using Microsoft.AspNet.SignalR.Hosting;
+using Microsoft.Extensions.Logging;
+using System.Text.Unicode;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace API.Controllers.Api
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ad : Controller
+    public class ad : ControllerBase
     {
         private readonly IAppConfiguration _appConfiguration;
         private readonly IAws3Services _aws3Services;
         private readonly IAd_files_Service _Ad_files;
         private readonly IAd_Playlist_Service _playlist;
         private readonly IDevice_Service _device;
-
-        public ad(IAppConfiguration appConfiguration, IDevice_Service device, IAd_Playlist_Service playlist, IAd_files_Service Ad_files)
+        IMemoryCache _cache;
+        public ad(IMemoryCache cache,IAppConfiguration appConfiguration, IDevice_Service device, IAd_Playlist_Service playlist, IAd_files_Service Ad_files)
         {
+            _cache = cache;
             _Ad_files = Ad_files;
             _device = device;
             _playlist = playlist;
             _appConfiguration = appConfiguration;
-            _aws3Services = new Aws3Services(_appConfiguration.AwsAccessKey, _appConfiguration.AwsSecretAccessKey, _appConfiguration.BucketName, _appConfiguration.URL);
+            _aws3Services = new Aws3Services(_cache, _appConfiguration.AwsAccessKey, _appConfiguration.AwsSecretAccessKey, _appConfiguration.BucketName, _appConfiguration.URL);
         }
         [EnableRateLimiting("ForFile")]
-        [HttpGet]
-        [Route("get_file")]
-        public async Task<IActionResult> get_files([FromQuery(Name = "id")] string fileid)
+        [HttpGet]        
+        [Route("file")]
+        public async Task<BaseResponse<LinkFile>> get_files([FromQuery(Name = "id")] string fileid)
         {
            
             var file = await _Ad_files.Getfile(fileid);
 
-            var document = await _aws3Services.DownloadAdFileAsync(file);
+            var document = _aws3Services.GetLinkAd(file);
             
                 if (document == null)
                 {
-                    return NotFound();
+                  var badResponse = new BaseResponse<LinkFile>() { error = "Not found" };
+                  return badResponse;
                 }
-                return File(document.ResponseStream, file.mime_type, file.name);
+                var response = new BaseResponse<LinkFile>() { data = new LinkFile() {URL = document.data } };
+                return response;
                        
             
             
 
         }
-        [EnableRateLimiting("ForOther")]
         [HttpGet]
-        [Route("get_playlist")]
+        [EnableRateLimiting("ForOther")]        
+        [Route("playlist")]
         public async Task<BaseResponse<Media_Ad_playlist_for_API>> get_playlist([FromQuery(Name = "Id")] string deviceid)
         {
             
@@ -84,5 +92,6 @@ namespace API.Controllers.Api
             }
 
         }
-    }
+		
+	}
 }

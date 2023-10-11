@@ -3,11 +3,14 @@ using API.DAL.Entity.ResponceModels;
 using API.Services.ForAPI.Int;
 using API.Services.ForDB.Int;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using MongoDB.Bson;
 using Newtonsoft.Json;
 using System;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using static MongoDB.Driver.WriteConcern;
 
@@ -30,9 +33,10 @@ namespace API.Controllers.Web
 			_ad_playlist = ad_Playlist;
 
 		}
+		[HttpGet]
 		[Route("Web/Devices/DevicesFace")]
-		[Authorize]
-		public async Task<IActionResult> DevicesFace()
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> DevicesFace()
         {
             var login = User.Identity.Name;
 			
@@ -43,14 +47,16 @@ namespace API.Controllers.Web
 			{
 				model.Add(_device.GetDevice(device).Result.data);
 			}
-			
+            ViewBag.Role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
+
             return View(model);
         }
 		[Route("Web/Devices/DeviceFace/CreateDevice")]
-		[Authorize]
-		[HttpPost]
+        [Authorize(Roles = "user")]
+        [HttpPost]
 		public async Task<bool> CreateDevice(string name, string address)
-		{
+		{		
+			
 			var login = User.Identity.Name;
 			var device = new Device(name, address);
 
@@ -59,8 +65,8 @@ namespace API.Controllers.Web
 			return result.data;
 		}
 		[Route("Web/Devices/DeviceFace/UpdateDevice")]
-		[Authorize]
-		[HttpGet]
+        [Authorize(Roles = "user")]
+        [HttpGet]
 		public async Task<IActionResult> UpdateDeviceFace()
 		{
 			var login = User.Identity.Name;
@@ -72,8 +78,9 @@ namespace API.Controllers.Web
 			{
 				model.Add(_device.GetDevice(device).Result.data);
 			}
+            ViewBag.Role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
 
-			return View(model);
+            return View(model);
 		}
 		[Route("Web/Devices/DeviceFace/Delete")]
 		[Authorize]
@@ -88,13 +95,15 @@ namespace API.Controllers.Web
 			else { return false; }
 			
 		}
-		[Route("Web/Devices/DevicesEdit")]
-		[Authorize]
-		public async Task<IActionResult> DevicesEdit([FromQuery(Name = "Id")] string id)
+        [HttpGet]
+        [Route("Web/Devices/DevicesEdit")]
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> DevicesEdit([FromQuery(Name = "Id")] string id)
 		{
-            var model = await _device.GetDevice(id);
-            var m_Playlists = await _media_playlist.GetPlayListUser(User.Identity.Name); // Get all playlist by user
-			if(model.data.media_playlist != null)
+			var model = await _device.GetDevice(id);
+			var m_Playlists = await _media_playlist.GetPlayListUser(User.Identity.Name); // Get all playlist by user
+			var publicPlaylist = await _media_playlist.GetPublicPlayList();
+			if (model.data.media_playlist != null)
 			{
 				var actual_Playlist = await _media_playlist.GetMediaPlaylist(model.data.media_playlist); //Get playlist by device
 
@@ -102,9 +111,15 @@ namespace API.Controllers.Web
 				{
 					m_Playlists.Remove(actual_Playlist.data);
 				}
+				if (publicPlaylist.Exists(pub => pub._id == actual_Playlist.data._id))
+				{
+					var targetPlaylist =  publicPlaylist.Find(pub => pub._id == actual_Playlist.data._id);
+					publicPlaylist.Remove(targetPlaylist);
+				}
 				m_Playlists.Insert(0, actual_Playlist.data);//Add in list playlists selected on device playlist
 			}
 			var a_Playlists = await _ad_playlist.GetPlayListUser(User.Identity.Name); // Get all playlist by user
+
 			if (model.data.ad_playlist != null)
 			{
 				var actual_AdPlaylist = await _ad_playlist.GetPlaylistAsyncbyId(model.data.ad_playlist); //Get playlist by device
@@ -115,14 +130,17 @@ namespace API.Controllers.Web
 				}
 				a_Playlists.Insert(0, actual_AdPlaylist.data);//Add in list playlists selected on device playlist
 			}
+
+            ViewBag.Role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
+            ViewBag.PublicPlaylist = publicPlaylist;
 			ViewBag.AdPlaylust = a_Playlists;
 			ViewBag.Plalists = m_Playlists;
 			return View(model.data);
 		}
 		[Route("Web/Devices/DevicesEdit/DeviceSave")]
 		[HttpPut]
-		[Authorize]
-		public async Task<bool> DeviceSave( string deviceJson , string intervalsJson)
+        [Authorize(Roles = "user")]
+        public async Task<bool> DeviceSave( string deviceJson , string intervalsJson)
 		{
 
 			var device = JsonConvert.DeserializeObject<Device>(deviceJson);
@@ -140,13 +158,14 @@ namespace API.Controllers.Web
 			return (true);
 		}
 		[Route("Web/Devices/DevicesEdit/DeviceUpdate")]
-		
-		[Authorize]
+        [HttpGet]
+        [Authorize(Roles = "user")]
 		public async Task<IActionResult> DeviceUpdate([FromQuery(Name ="Id")] string mongoid)
 		{	
 
 			var model = await _device.GetDevice(mongoid);
 			var m_Playlists = await _media_playlist.GetPlayListUser(User.Identity.Name); // Get all playlist by user
+			var publicPlaylist = await _media_playlist.GetPublicPlayList();
 			if (model.data.media_playlist != null)
 			{
 				var actual_Playlist = await _media_playlist.GetMediaPlaylist(model.data.media_playlist); //Get playlist by device
@@ -155,9 +174,15 @@ namespace API.Controllers.Web
 				{
 					m_Playlists.Remove(actual_Playlist.data);
 				}
+				if (publicPlaylist.Exists(pub => pub._id == actual_Playlist.data._id))
+				{
+					var targetPlaylist = publicPlaylist.Find(pub => pub._id == actual_Playlist.data._id);
+					publicPlaylist.Remove(targetPlaylist);
+				}
 				m_Playlists.Insert(0, actual_Playlist.data);//Add in list playlists selected on device playlist
 			}
 			var a_Playlists = await _ad_playlist.GetPlayListUser(User.Identity.Name); // Get all playlist by user
+			
 			if (model.data.ad_playlist != null)
 			{
 				var actual_AdPlaylist = await _ad_playlist.GetPlaylistAsyncbyId(model.data.ad_playlist); //Get playlist by device
@@ -168,10 +193,13 @@ namespace API.Controllers.Web
 				}
 				a_Playlists.Insert(0, actual_AdPlaylist.data);//Add in list playlists selected on device playlist
 			}
+
+            ViewBag.Role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
+            ViewBag.PublicPlaylist = publicPlaylist;
 			ViewBag.AdPlaylust = a_Playlists;
 			ViewBag.Plalists = m_Playlists;
 			return View(model.data);
 		}
-
+		
 	}
 }

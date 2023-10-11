@@ -8,6 +8,7 @@
 <head>
 	<link href="~/css/PL/PlayList-Face.css" rel="stylesheet" asp-append-version="true" />
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	
 	<script src = "~/js/PL/File-Modal-window.js" defer></script>	
 	<script src = "~/js/PL/Send.js" defer></script>
 </head>
@@ -61,37 +62,69 @@
 
 </div>
 <div class="added-Content">
-	<button id="btn" class="btn" data-path="one">Create playlist</button>
+	<button id="btn" class="btn" data-path="one">Create Device</button>
 	</div>
-
+@if(ViewBag.Role == "admin")
+{
 	<div class="modal-overlay" id="modal-overlay">
-		<div class="modal-window" data-target="one">		
-				<div class="window-title">
-					<h2 >Меню создания плэй листа</h2>
-					<div class="div-name">
-						<h3>Название плейлиста</h3>
-						<input id ="playlist-name"type="text" name="name">
+		<div class="modal-window" data-target="one">
+			<div class="window-title">
+				<h2>Меню создания плэйлиста</h2>
+				<div class="div-name">
+					<h3>Название плейлиста</h3>
+					<input id="playlist-name" type="text" name="name">
+				</div>
+				<h3>Дополнительные настройки</h3>
+				<div class="div-type">
+					<div>
+						<p>
+							Выберите тип плейлиста
+						</p>
 					</div>
-					<h3>Дополнительные настройки</h3>
-					<div class="div-type">
-						<div>
-							<p>
-								Выберите тип плейлиста
-							</p>
-						</div>
-						<div>
-							<select name="" id="playlist-type">
-						<option value="true">Рекламный</option>
-						<option value="false">Обычный</option>
-							</select>
-						</div>
-
-
+					<div>
+						<select id="playlist-type" data-role="@ViewBag.Role">
+							<option value="false">Обычный</option>
+						</select>
 					</div>
-					<button id="save" type="submit"> Send </button>					
+					<input type="text" style="visibility:hidden" value="@ViewBag.Role">
+				</div>
+				<button id="save" type="submit"> Send </button>
+			</div>
 		</div>
 	</div>
-</div>
+}
+else
+{
+	<div class="modal-overlay" id="modal-overlay">
+		<div class="modal-window" data-target="one">
+			<div class="window-title">
+				<h2>Меню создания плэйлиста</h2>
+				<div class="div-name">
+					<h3>Название плейлиста</h3>
+					<input id="playlist-name" type="text" name="name">
+				</div>
+				<h3>Дополнительные настройки</h3>
+				<div class="div-type">
+					<div>
+						<p>
+							Выберите тип плейлиста
+						</p>
+					</div>
+					<div>
+						<select id="playlist-type" data-role="@ViewBag.Role">
+							<option value="true">Рекламный</option>
+							<option value="false">Обычный</option>
+						</select>
+					</div>
+					<input type="text" style="visibility:hidden" value="@ViewBag.Role">
+
+				</div>
+				<button id="save" type="submit"> Send </button>
+			</div>
+		</div>
+	</div>
+}
+
 <div id="loading" class="loading">
 	Loading!
 </div>

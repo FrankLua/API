@@ -37,7 +37,7 @@ namespace API.Controllers.Web
                 var user = await _user.CheakUser(model.login, model.password);
                 if (user.data != null)
                 {
-                    await Authenticate(model.login); // аутентификация
+                    await Authenticate(user.data); // аутентификация
 
                     return RedirectToAction("Main", "Home");
                 }
@@ -45,12 +45,13 @@ namespace API.Controllers.Web
             }
             return View(model);
         }
-        private async Task Authenticate(string userName)
+        private async Task Authenticate(User user)
         {
             // создаем один claim
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.login),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.role)
             };
             // создаем объект ClaimsIdentity
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
@@ -58,6 +59,7 @@ namespace API.Controllers.Web
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
         [Route("Logout")]
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             if(User.Identity.Name != null)

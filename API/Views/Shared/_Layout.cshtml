@@ -17,18 +17,29 @@
         <div class = "sidebar">
             <div class="person-cab">                
             </div>
-            <a class="menu-button" href="/Web/Devices/DevicesFace">>My Device</a>
-            <a class="menu-button" href="/Web/PlayLists/PlaylistsFace">>My Playlist</a>
-            <a class="menu-button" href="/Web/Download/DownloadFace">>Download Files</a>
-            <a class="menu-button" href="/Web/Gc">>GC</a>
-            <a class="menu-button" href="/Web/Log/Logout">>Exit account</a>
+            @if (ViewBag.Role == "admin")
+            {
+                <a class="menu-button" href="/Web/PlayLists/PlaylistsFace">>My Playlist</a>
+                <a class="menu-button" href="/Web/Download/DownloadFace">>Download Files</a>
+                <a class="menu-button" href="/Web/User/Create">>Create new user</a>
+                <a class="menu-button" href="/Web/Log/Logout">>Exit account</a>
+            }
+            else
+            {
+                <a class="menu-button" href="/Web/Devices/DevicesFace">>My Device</a>
+                <a class="menu-button" href="/Web/PlayLists/PlaylistsFace">>My Playlist</a>
+                <a class="menu-button" href="/Web/Download/DownloadFace">>Download Files</a>                
+                <a class="menu-button" href="/Web/Log/Logout">>Exit account</a>
+            }
+            
+            
         </div>
         <div class = "content" id="content">
             @RenderBody()
         </div>
     </div>
     <div class="footer">
-        <div class="foter-content">all right protected</div>
+        <div class="foter-content">all right protected v-1.03</div>
     </div>
 </body>
 </html>

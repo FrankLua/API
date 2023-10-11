@@ -5,7 +5,9 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+ENV ASPNETCORE_ENVIRONMENT=Development
 WORKDIR /src
 COPY ["API/API.csproj", "API/"]
 RUN dotnet restore "API/API.csproj"
